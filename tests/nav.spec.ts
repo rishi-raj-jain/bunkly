@@ -18,7 +18,7 @@ for (const { path, testId } of STATIC_PAGES) {
     const errors: string[] = [];
     page.on('pageerror', (err) => errors.push(err.message));
 
-    await page.goto(path);
+    await page.goto(path, { waitUntil: 'networkidle' });
     await expect(page.getByTestId(testId)).toBeVisible();
     expect(errors, `JS errors on ${path}: ${errors.join(', ')}`).toHaveLength(0);
   });

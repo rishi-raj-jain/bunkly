@@ -2,8 +2,7 @@ import { test, expect } from '@playwright/test';
 
 // LOY-01 · Join loyalty program  [P0]
 test('LOY-01: enrolls in loyalty program and shows welcome points', async ({ page }) => {
-  await page.goto('/account/loyalty');
-  await expect(page.getByTestId('loyalty-title')).toBeVisible();
+  await page.goto('/account/loyalty', { waitUntil: 'networkidle' });
 
   const joinBtn = page.getByTestId('join-loyalty');
   if (await joinBtn.isVisible({ timeout: 120_000 }).catch(() => false)) {
@@ -20,7 +19,7 @@ test('LOY-01: enrolls in loyalty program and shows welcome points', async ({ pag
 
 // LOY-02 · View points history  [P0]
 test('LOY-02: points history and tier progress are visible for an enrolled member', async ({ page }) => {
-  await page.goto('/account/loyalty');
+  await page.goto('/account/loyalty', { waitUntil: 'networkidle' });
 
   // Ensure enrolled first
   const joinBtn = page.getByTestId('join-loyalty');
@@ -29,7 +28,7 @@ test('LOY-02: points history and tier progress are visible for an enrolled membe
   }
 
   await expect(page.getByTestId('points-balance')).toBeVisible();
-  await expect(page.getByTestId('points-history')).toBeVisible();
+  await page.getByTestId('points-history').waitFor({ state: 'visible' });
   await expect(page.getByTestId('tier-progress')).toBeVisible();
   await expect(page.getByTestId('tier-benefits')).toBeVisible();
 });

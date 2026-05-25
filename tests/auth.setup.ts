@@ -9,7 +9,7 @@ setup('seed database and save sarah session', async ({ page }) => {
     cwd: path.resolve(__dirname, '..'),
     stdio: 'inherit',
   });
-  await page.goto('/login');
+  await page.goto('/login', { waitUntil: 'networkidle' });
   await page.getByTestId('login-email').fill('sarah@example.com');
   await page.getByTestId('login-password').fill('password123');
   await page.getByTestId('login-submit').click();

@@ -3,7 +3,7 @@ import { PARIS_SLUG, BOOK_CHECKIN, BOOK_CHECKOUT } from './helpers';
 
 // PROP-01 · Property detail page renders correctly  [P0]
 test('PROP-01: property detail page shows all key sections', async ({ page }) => {
-  await page.goto(`/properties/${PARIS_SLUG}`);
+  await page.goto(`/properties/${PARIS_SLUG}`, { waitUntil: 'networkidle' });
 
   await expect(page.getByTestId('property-hero-image')).toBeVisible();
   await expect(page.getByTestId('property-name')).toBeVisible();
@@ -19,7 +19,7 @@ test('PROP-01: property detail page shows all key sections', async ({ page }) =>
 
 // PROP-02 · Booking sidebar shows availability state  [P0]
 test('PROP-02: check availability returns room options; Book Now hidden until room selected', async ({ page }) => {
-  await page.goto(`/properties/${PARIS_SLUG}`);
+  await page.goto(`/properties/${PARIS_SLUG}`, { waitUntil: 'networkidle' });
 
   await page.getByTestId('sidebar-checkin').fill(BOOK_CHECKIN);
   await page.getByTestId('sidebar-checkout').fill(BOOK_CHECKOUT);

@@ -998,6 +998,40 @@ async function seed() {
   }
   console.log("  Created 15 sample bookings");
 
+  // Past booking for sarah — required for write-review tests
+  const sarah = guestUsers[0];
+  const pastProperty = allProperties[0];
+  const pastRoomTypes = allRoomTypes.filter((rt) => rt.propertyId === pastProperty.id);
+  const pastRoomType = pastRoomTypes[0];
+  const pastCheckIn = new Date();
+  pastCheckIn.setDate(pastCheckIn.getDate() - 10);
+  const pastCheckOut = new Date(pastCheckIn);
+  pastCheckOut.setDate(pastCheckOut.getDate() + 3);
+  const pastNightlyRate = parseFloat(pastRoomType.baseRate);
+  const pastSubtotal = pastNightlyRate * 3;
+  const pastTaxes = pastSubtotal * 0.12;
+
+  await db.insert(schema.bookings).values({
+    confirmationNo: "BC-PAST01",
+    userId: sarah.id,
+    propertyId: pastProperty.id,
+    roomTypeId: pastRoomType.id,
+    status: "checked_out",
+    checkIn: pastCheckIn.toISOString().split("T")[0],
+    checkOut: pastCheckOut.toISOString().split("T")[0],
+    adults: 2,
+    children: 0,
+    guestName: sarah.name!,
+    guestEmail: sarah.email,
+    guestPhone: "+1-555-0100",
+    subtotal: pastSubtotal.toFixed(2),
+    taxes: pastTaxes.toFixed(2),
+    total: (pastSubtotal + pastTaxes).toFixed(2),
+    currency: "USD",
+    cancellationPolicy: pastProperty.cancellationPolicy,
+  });
+  console.log("  Created past booking BC-PAST01 for sarah (checked_out)");
+
   // 4. Create sample reviews
   console.log("Creating sample reviews...");
   const allBookings = await db
@@ -1062,6 +1096,64 @@ async function seed() {
     });
   }
   console.log(`  Created ${allBookings.length} sample reviews`);
+
+  // 5. Create sample conversations for sarah with a property host
+  console.log("Creating sample conversations...");
+  const conversationProperty = allProperties[0]; // The Grand Bunkly NYC
+
+  const [conversation] = await db
+    .insert(schema.conversations)
+    .values({
+      propertyId: conversationProperty.id,
+      lastMessageAt: new Date(),
+    })
+    .returning();
+
+  await db.insert(schema.conversationParticipants).values([
+    {
+      conversationId: conversation.id,
+      userId: sarah.id,
+      role: "guest",
+      lastReadAt: new Date(),
+    },
+    {
+      conversationId: conversation.id,
+      userId: hostUser.id,
+      role: "host",
+      lastReadAt: new Date(),
+    },
+  ]);
+
+  const now = new Date();
+  const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+  const thirtyMinsAgo = new Date(now.getTime() - 30 * 60 * 1000);
+
+  await db.insert(schema.messages).values([
+    {
+      conversationId: conversation.id,
+      senderId: sarah.id,
+      body: "Hi, I have a question about early check-in. Is it possible to check in at noon instead of 3pm?",
+      messageType: "text",
+      createdAt: twoHoursAgo,
+    },
+    {
+      conversationId: conversation.id,
+      senderId: hostUser.id,
+      body: "Hi Sarah! We'll do our best to accommodate an early check-in. It depends on room availability that day. I'll check and get back to you by tomorrow morning.",
+      messageType: "text",
+      createdAt: oneHourAgo,
+    },
+    {
+      conversationId: conversation.id,
+      senderId: sarah.id,
+      body: "Thank you! That would be amazing. Looking forward to my stay.",
+      messageType: "text",
+      createdAt: thirtyMinsAgo,
+    },
+  ]);
+
+  console.log("  Created 1 conversation with 3 messages for sarah");
 
   console.log("\nSeed complete!");
 }

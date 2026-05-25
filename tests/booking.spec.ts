@@ -6,7 +6,7 @@ import { PARIS_SLUG, BOOK_CHECKIN, BOOK_CHECKOUT, futureDate } from './helpers';
 // BOOK-01 · Full booking funnel: search → property → checkout → confirmation
 test('BOOK-01: completes full booking funnel and lands on confirmation page', async ({ page }) => {
   // Property page
-  await page.goto(`/properties/${PARIS_SLUG}`);
+  await page.goto(`/properties/${PARIS_SLUG}`, { waitUntil: 'networkidle' });
   await page.getByTestId('sidebar-checkin').fill(BOOK_CHECKIN);
   await page.getByTestId('sidebar-checkout').fill(BOOK_CHECKOUT);
   await page.getByTestId('sidebar-guests').fill('2');
@@ -49,7 +49,7 @@ test('BOOK-01: completes full booking funnel and lands on confirmation page', as
 
 // BOOK-02 · Booking appears in bookings list
 test('BOOK-02: bookings list shows at least one seeded booking', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('bookings-title')).toBeVisible();
   // At least one upcoming booking card
   await page.getByTestId('tab-upcoming').click();
@@ -58,7 +58,7 @@ test('BOOK-02: bookings list shows at least one seeded booking', async ({ page }
 
 // BOOK-03 · Cancel a booking
 test('BOOK-03: cancels an upcoming booking and shows cancelled status', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
   await expect(page).toHaveURL(/\/bookings\//);
@@ -74,7 +74,7 @@ test('BOOK-03: cancels an upcoming booking and shows cancelled status', async ({
 
 // BOOK-04 · View booking detail
 test('BOOK-04: booking detail shows dates, room type, and total', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
 
@@ -88,7 +88,7 @@ test('BOOK-04: booking detail shows dates, room type, and total', async ({ page 
 
 // BOOK-05 · Modify booking dates
 test('BOOK-05: modifies booking dates and shows success', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
 
@@ -106,7 +106,7 @@ test('BOOK-05: modifies booking dates and shows success', async ({ page }) => {
 
 // BOOK-06 · Add add-on to booking
 test('BOOK-06: adds breakfast add-on and it appears in booking detail', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
 
@@ -121,7 +121,7 @@ test('BOOK-06: adds breakfast add-on and it appears in booking detail', async ({
 
 // BOOK-07 · Online check-in flow
 test('BOOK-07: completes online check-in and shows completion state', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
 
@@ -146,15 +146,15 @@ test('BOOK-07: completes online check-in and shows completion state', async ({ p
 
 // BOOK-08 · Service request during active booking  [P2]
 test('BOOK-08: submits a service request and it appears in the booking', async ({ page }) => {
-  await page.goto('/bookings');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
   await page.locator('[data-testid^="booking-card-"]').first().click();
 
-  await expect(page.getByTestId('service-section')).toBeVisible();
+  // service-request-button is the closed state of the dialog — click it to open
   await page.getByTestId('service-request-button').click();
   await expect(page.getByTestId('service-request-dialog')).toBeVisible();
 
-  await page.getByTestId('service-type-select').selectOption({ index: 1 });
+  await page.getByTestId('service-type-select').selectOption('towels');
   await page.getByTestId('service-details-input').fill('Please bring extra towels.');
   await page.getByTestId('submit-service-request').click();
 

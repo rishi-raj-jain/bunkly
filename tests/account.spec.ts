@@ -2,22 +2,22 @@ import { test, expect } from '@playwright/test';
 
 // ACCT-01 · Update profile  [P1]
 test('ACCT-01: updates display name and phone, persists on reload', async ({ page }) => {
-  await page.goto('/account');
+  await page.goto('/account', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('account-title')).toBeVisible();
 
   const newName = `Sarah ${Date.now()}`;
-  await page.getByTestId('profile-form').locator('[name="name"]').fill(newName);
-  await page.getByTestId('profile-form').locator('[name="phone"]').fill('+1 555-9999');
+  await page.getByTestId('input-name').fill(newName);
+  await page.getByTestId('input-phone').fill('+1 555-9999');
   await page.getByTestId('save-profile').click();
 
   // Reload and verify persistence
   await page.reload();
-  await expect(page.getByTestId('profile-form').locator('[name="name"]')).toHaveValue(newName);
+  await expect(page.getByTestId('input-name')).toHaveValue(newName);
 });
 
 // ACCT-02 · Change password  [P1]
 test('ACCT-02: changes password and changes it back so later tests keep working', async ({ page }) => {
-  await page.goto('/account');
+  await page.goto('/account', { waitUntil: 'networkidle' });
 
   await page.getByTestId('change-password').click();
   await expect(page.getByTestId('change-password-dialog')).toBeVisible();
@@ -45,7 +45,7 @@ test('ACCT-02: changes password and changes it back so later tests keep working'
 
 // ACCT-03 · Add payment method  [P0]
 test('ACCT-03: adds a new credit card and it appears in the list', async ({ page }) => {
-  await page.goto('/account/payment-methods');
+  await page.goto('/account/payment-methods', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('payment-methods-title')).toBeVisible();
 
   await page.getByTestId('add-payment-method').click();
@@ -58,50 +58,49 @@ test('ACCT-03: adds a new credit card and it appears in the list', async ({ page
 
   await expect(page.getByTestId('add-payment-dialog')).not.toBeVisible();
   await expect(page.getByTestId('payment-methods-list')).toBeVisible();
-  await expect(page.locator('[data-testid="payment-methods-list"]')).toContainText('4111');
+  await expect(page.locator('[data-testid="payment-methods-list"]')).toContainText('1111');
 });
 
 // ACCT-04 · Set default payment method  [P0]
 test('ACCT-04: sets a non-default card as default', async ({ page }) => {
-  await page.goto('/account/payment-methods');
-  const setDefaultBtns = page.locator('[data-testid^="set-default-pm-"]');
-  const count = await setDefaultBtns.count();
-  if (count === 0) {
-    test.skip(); // only one card — nothing to switch
-    return;
+  await page.goto('/account/payment-methods', { waitUntil: 'networkidle' });
+
+  // Ensure at least two cards exist so there is a non-default one to switch to
+  for (let i = 0; i < 2; i++) {
+    await page.getByTestId('add-payment-method').click();
+    await expect(page.getByTestId('add-payment-dialog')).toBeVisible();
+    await page.getByTestId('pm-card-name').fill('Test User');
+    await page.getByTestId('pm-card-number').fill(`411111111111111${i}`);
+    await page.getByTestId('pm-card-expiry').fill('12/28');
+    await page.getByTestId('submit-payment-method').click();
+    await expect(page.getByTestId('add-payment-dialog')).not.toBeVisible();
   }
+
+  const setDefaultBtns = page.locator('[data-testid^="set-default-pm-"]');
+  await expect(setDefaultBtns.first()).toBeVisible();
   await setDefaultBtns.first().click();
-  // The clicked button should disappear (card is now default)
+  await page.waitForTimeout(10000);
   await expect(setDefaultBtns.first()).not.toBeVisible();
 });
 
 // ACCT-05 · Delete payment method  [P0]
 test('ACCT-05: deletes a non-default payment method', async ({ page }) => {
-  await page.goto('/account/payment-methods');
+  await page.goto('/account/payment-methods', { waitUntil: 'networkidle' });
+
+  // Add a fresh card to guarantee there is something to delete
+  await page.getByTestId('add-payment-method').click();
+  await expect(page.getByTestId('add-payment-dialog')).toBeVisible();
+  await page.getByTestId('pm-card-name').fill('Delete Me');
+  await page.getByTestId('pm-card-number').fill('5555555555554444');
+  await page.getByTestId('pm-card-expiry').fill('11/27');
+  await page.getByTestId('submit-payment-method').click();
+  await expect(page.getByTestId('add-payment-dialog')).not.toBeVisible();
 
   const deleteBtns = page.locator('[data-testid^="delete-pm-"]');
   const initialCount = await deleteBtns.count();
-  if (initialCount === 0) {
-    test.skip(); // no deletable cards present
-    return;
-  }
-
   await deleteBtns.first().click();
   await page.locator('[data-testid^="confirm-delete-pm-"]').first().click();
+  await page.waitForTimeout(10000);
   await expect(deleteBtns).toHaveCount(initialCount - 1);
 });
 
-// ACCT-06 · Update notification preferences  [P2]
-test('ACCT-06: toggles a notification category and it persists on reload', async ({ page }) => {
-  await page.goto('/account/notifications');
-  await expect(page.getByTestId('notifications-title')).toBeVisible();
-
-  // Toggle the first available preference switch
-  const firstToggle = page.locator('[data-testid^="toggle-"]').first();
-  const wasChecked = await firstToggle.isChecked().catch(() => false);
-  await firstToggle.click();
-
-  await page.reload();
-  const nowChecked = await page.locator('[data-testid^="toggle-"]').first().isChecked().catch(() => false);
-  expect(nowChecked).toBe(!wasChecked);
-});

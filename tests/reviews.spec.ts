@@ -16,7 +16,7 @@ test('REV-01: submits a review from a booking detail page', async ({ page }) => 
   // Dialog closes after successful submission
   await expect(page.getByTestId('write-review-dialog')).not.toBeVisible();
   // Review now appears on account/reviews
-  await page.goto('/account/reviews');
+  await page.goto('/account/reviews', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('reviews-list')).toContainText('Excellent stay!');
 });
 
@@ -27,7 +27,7 @@ test.skip('REV-02: edits an existing review (not yet implemented)', async () => 
 
 // REV-03 · Delete a review  [P1]
 test('REV-03: deletes a review and it disappears from the list', async ({ page }) => {
-  await page.goto('/account/reviews');
+  await page.goto('/account/reviews', { waitUntil: 'networkidle' });
 
   const reviews = page.locator('[data-testid^="my-review-"]');
   const count = await reviews.count();
@@ -50,7 +50,7 @@ test('REV-03: deletes a review and it disappears from the list', async ({ page }
 // REV-04 · Mark review as helpful  [P1]
 test('REV-04: helpful vote increments count; clicking again toggles it back', async ({ page }) => {
   // Find a property with reviews
-  await page.goto('/properties/bunkly-boutique-paris');
+  await page.goto('/properties/bunkly-boutique-paris', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('reviews-title')).toBeVisible();
 
   const voteBtn = page.locator('[data-testid^="vote-review-"]').first();

@@ -22,16 +22,17 @@ export const BOOK_CHECKOUT = futureDate(93);
  * Throws if no eligible booking is found among the first 5 cards.
  */
 export async function findBookingForReview(page: Page): Promise<void> {
-  await page.goto('/bookings');
-  await page.getByTestId('tab-upcoming').click();
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
+  await page.getByTestId('tab-past').click();
   const cards = page.locator('[data-testid^="booking-card-"]');
   const count = await cards.count();
   for (let i = 0; i < Math.min(count, 5); i++) {
     await cards.nth(i).click();
+    await page.waitForLoadState('networkidle');
     const btn = page.getByTestId('write-review-button');
     if (await btn.isVisible({ timeout: 120_000 }).catch(() => false)) return;
-    await page.goto('/bookings');
-    await page.getByTestId('tab-upcoming').click();
+    await page.goto('/bookings', { waitUntil: 'networkidle' });
+    await page.getByTestId('tab-past').click();
   }
-  throw new Error('No eligible booking found for review');
+  throw new Error('No eligible booking found for review — needs a checked_out or past booking');
 }

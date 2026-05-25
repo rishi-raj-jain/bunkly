@@ -1,45 +1,43 @@
 import { test, expect } from '@playwright/test';
-import { BOOK_CHECKIN, BOOK_CHECKOUT } from './helpers';
+import { PARIS_SLUG } from './helpers';
 
 // ALERT-01 · Create price alert  [P2]
-test('ALERT-01: creates a price alert and it appears in the list', async ({ page }) => {
-  await page.goto('/account/price-alerts');
-  await expect(page.getByTestId('price-alerts-title')).toBeVisible();
+// The create-price-alert button lives on the property detail page, not /account/price-alerts
+test('ALERT-01: creates a price alert from a property page and shows success', async ({ page }) => {
+  await page.goto(`/properties/${PARIS_SLUG}`, { waitUntil: 'networkidle' });
 
   await page.getByTestId('create-price-alert').click();
   await expect(page.getByTestId('price-alert-form')).toBeVisible();
 
-  // Fill the alert form — destination, dates, and target price
-  await page.getByTestId('search-destination').fill('Paris');
-  await page.getByTestId('search-checkin').fill(BOOK_CHECKIN);
-  await page.getByTestId('search-checkout').fill(BOOK_CHECKOUT);
   await page.getByTestId('price-alert-target').fill('200');
   await page.getByTestId('submit-price-alert').click();
 
-  await expect(page.getByTestId('price-alerts-list')).toBeVisible();
-  await expect(page.locator('[data-testid^="alert-"]').first()).toBeVisible();
+  // Success state replaces the form
+  await expect(page.locator('[data-testid="price-alert-form"]')).toContainText(/Alert created/i);
 });
 
 // ALERT-02 · Toggle and delete price alert  [P2]
+// Alerts created above are listed on /account/price-alerts
 test('ALERT-02: disables, re-enables, then deletes a price alert', async ({ page }) => {
-  await page.goto('/account/price-alerts');
+  await page.goto('/account/price-alerts', { waitUntil: 'networkidle' });
+  await expect(page.getByTestId('price-alerts-title')).toBeVisible();
 
-  const alerts = page.locator('[data-testid^="alert-"]');
+  const alerts = page.locator('[data-testid^="price-alert-"]');
   if (await alerts.count() === 0) {
-    test.skip(); // no alerts — run ALERT-01 first
+    test.skip(); // run ALERT-01 first
     return;
   }
 
   const testId = await alerts.first().getAttribute('data-testid');
-  const alertId = testId!.replace('alert-', '');
+  const alertId = testId!.replace('price-alert-', '');
 
   // Toggle off
   await page.getByTestId(`toggle-alert-${alertId}`).click();
-  await expect(page.getByTestId(`toggle-alert-${alertId}`)).not.toBeChecked();
+  await expect(page.locator(`[data-testid="price-alert-${alertId}"]`)).toContainText(/Paused/i);
 
   // Toggle back on
   await page.getByTestId(`toggle-alert-${alertId}`).click();
-  await expect(page.getByTestId(`toggle-alert-${alertId}`)).toBeChecked();
+  await expect(page.locator(`[data-testid="price-alert-${alertId}"]`)).toContainText(/Active/i);
 
   // Delete
   const initialCount = await alerts.count();

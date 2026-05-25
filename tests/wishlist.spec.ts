@@ -3,7 +3,7 @@ import { PARIS_SLUG } from './helpers';
 
 // WISH-01 · Create wishlist and add property  [P2]
 test('WISH-01: creates a wishlist and saves a property to it', async ({ page }) => {
-  await page.goto('/account/wishlists');
+  await page.goto('/account/wishlists', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('wishlists-title')).toBeVisible();
 
   // Create a new wishlist
@@ -15,16 +15,16 @@ test('WISH-01: creates a wishlist and saves a property to it', async ({ page }) 
   await expect(page.getByTestId('wishlists-grid')).toContainText('E2E Test List');
 
   // Save a property to the new wishlist
-  await page.goto(`/properties/${PARIS_SLUG}`);
+  await page.goto(`/properties/${PARIS_SLUG}`, { waitUntil: 'networkidle' });
   await page.getByTestId('save-property').click();
   // Property saved — navigate back and verify
-  await page.goto('/account/wishlists');
+  await page.goto('/account/wishlists', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('wishlists-grid')).toBeVisible();
 });
 
 // WISH-02 · Remove property from wishlist  [P2]
 test('WISH-02: removes a saved property from a wishlist', async ({ page }) => {
-  await page.goto('/account/wishlists');
+  await page.goto('/account/wishlists', { waitUntil: 'networkidle' });
 
   // Find a wishlist card with at least one property and a remove button
   const removeBtns = page.locator('[data-testid^="remove-from-wl-"]');
@@ -40,7 +40,7 @@ test('WISH-02: removes a saved property from a wishlist', async ({ page }) => {
 
 // WISH-03 · Share wishlist  [P2]
 test('WISH-03: toggles sharing on a wishlist', async ({ page }) => {
-  await page.goto('/account/wishlists');
+  await page.goto('/account/wishlists', { waitUntil: 'networkidle' });
 
   const shareBtn = page.locator('[data-testid^="share-wl-"]').first();
   const hasShare = await shareBtn.isVisible({ timeout: 120_000 }).catch(() => false);
@@ -55,7 +55,7 @@ test('WISH-03: toggles sharing on a wishlist', async ({ page }) => {
 
 // WISH-04 · Rename and delete wishlist  [P2]
 test('WISH-04: renames a wishlist then deletes it', async ({ page }) => {
-  await page.goto('/account/wishlists');
+  await page.goto('/account/wishlists', { waitUntil: 'networkidle' });
 
   const renameBtns = page.locator('[data-testid^="rename-wl-"]');
   const hasRename = await renameBtns.first().isVisible({ timeout: 120_000 }).catch(() => false);
