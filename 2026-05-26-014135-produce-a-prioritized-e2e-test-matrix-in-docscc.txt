@@ -53,7 +53,7 @@
   cover DB isolation, date arithmetic, and a @p0 tag strategy for a fast CI
   smoke gate.
 
-✻ Churned for 2m 8s
+✻ Worked for 2m 8s
 
 ※ recap: Created docs/cc-test-plan.md with 37 prioritized Playwright E2E test cases covering auth, booking funnel, account management, and secondary features. No immediate next action required unless you want to scaffold the actual test files. (disable recaps in /config)
 
@@ -178,7 +178,7 @@
   SEARCH-04 (search history) stayed P2 — it's a UX convenience, not in the
   purchase path.
 
-✻ Brewed for 33s
+✻ Cogitated for 33s
 
 ❯ but how is wishlist a P1?                                                     
 
@@ -245,7 +245,7 @@
   only covers flows that materially affect a user's ability to book or manage an
    existing booking — wishlists don't meet that bar.
 
-✻ Crunched for 21s
+✻ Baked for 21s
 ❯ why adding payment method is P1?                                              
 
 ⏺ Good challenge. The checkout flow (BOOK-01) covers payment entry directly —
@@ -328,7 +328,7 @@
   ever visiting /account/payment-methods. Saved card management is a
   repeat-customer convenience — same bucket as wishlists and price alerts.
 
-✻ Cooked for 20s
+✻ Cogitated for 20s
 
 ❯ why did you move payment method to P2? It was in P1 and it should be a P0     
   instead since we need to be able to process money!                            
@@ -412,7 +412,7 @@
    right that payment management is revenue-critical and should have gone up,
   not down.
 
-✻ Churned for 24s
+✻ Sautéed for 24s
 
 ❯ why loyalty program is P1?                                                    
 
@@ -528,7 +528,7 @@
   checkout) was in P2 but belongs at P0 for the same reason — if points don't
   apply correctly at payment time, repeat customers are directly impacted.
 
-✻ Crunched for 31s
+✻ Cogitated for 31s
 
 ❯ why in the world is forgot password a P2?                                     
 
@@ -575,7 +575,7 @@
 ⏺ Done. Locked-out users who can't recover their account can't book — that's P0
   by definition. My original placement was wrong.
 
-✻ Worked for 12s
+✻ Sautéed for 12s
 
 ❯ why any review related feature a P2? i believe that's one of the top actions  
   that people do on our app!                                                    
@@ -631,7 +631,7 @@
 ⏺ Done. All four review cases are now P1. REV-01/02/03 were already there —
   REV-04 just needed to catch up.
 
-✻ Baked for 21s
+✻ Crunched for 21s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-13262
@@ -688,7 +688,7 @@
    users stuck unable to register — both are auth-integrity failures that belong
    at P0.
 
-✻ Sautéed for 20s
+✻ Baked for 20s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-13293
@@ -949,7 +949,7 @@
   archive button testid). These are ready to un-skip once the features are
   built.
 
-✻ Sautéed for 13m 25s
+✻ Worked for 13m 25s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-134653
@@ -986,7 +986,7 @@
   - Seeded accounts — so anyone picking up the repo knows the test credentials
   without digging into seed.ts
 
-✻ Sautéed for 32s
+✻ Crunched for 32s
 
 ❯ install the required libraries                                                
 
@@ -1001,7 +1001,7 @@
   the browser binaries (Chromium, Firefox, WebKit) are installed. You can now
   run the tests with npx playwright test.
 
-✻ Cooked for 18s
+✻ Churned for 18s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-142543
@@ -1062,7 +1062,7 @@
   works)
   - README.md description — updated wording to mention the production server
 
-✻ Worked for 24s
+✻ Brewed for 24s
 
 ❯ wait until 2 minutes for page navigations to be completed, right now  you     
   time out per 30 seconds                                                       
@@ -1081,7 +1081,7 @@
   actionTimeout covers click(), fill(), waitFor(), and similar interactions —
   both now set to 2 minutes.
 
-✻ Brewed for 7s
+✻ Cogitated for 7s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-153841
@@ -1142,7 +1142,7 @@
   of the budget unnecessarily; waitForURL('/') already waits for the redirect to
    complete
 
-✻ Sautéed for 22s
+✻ Brewed for 22s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-154928
@@ -1157,7 +1157,7 @@
 
 ⏺ Hi! What can I help you with?
 
-✻ Cooked for 3s
+✻ Cogitated for 3s
 
 ❯ which directory you are in right now and are you still in the /btw context?   
 
@@ -1167,7 +1167,7 @@
   And no, /btw isn't active — you ran it without arguments so it just printed
   its usage and exited. We're in the normal conversation context.
 
-✻ Cooked for 6s
+✻ Cogitated for 6s
 
 ※ recap: We're building a Playwright E2E test suite for the Bunkly hotel booking app. Tests and config are written. Next step is to run the suite and fix any failures.
 
@@ -1179,7 +1179,7 @@
   which has storageState: "tests/.auth/user.json" configured. That means every
   test in the file starts with sarah's authenticated session already loaded.
 
-✻ Cogitated for 5s
+✻ Crunched for 5s
 
 ❯ increase all the timeouts to 120 seconds for all operations, I see that some  
   tests still have 3 seconds as their timeout                                   
@@ -1195,7 +1195,7 @@
   minutes, and the per-operation navigationTimeout/actionTimeout also at 2
   minutes — so every layer is consistently at 120 seconds.
 
-✻ Churned for 17s
+✻ Cogitated for 17s
 ❯ but in the tests report I see the following Error:                            
   expect(locator).toBeVisible() failed                                          
                                                                                 
@@ -1224,7 +1224,7 @@
   assertions. Previously it was defaulting to 5000ms regardless of
   actionTimeout.
 
-✻ Sautéed for 15s
+✻ Churned for 15s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-175424
@@ -1273,7 +1273,7 @@
 ⏺ Done. Run with HEADED=1 npx playwright test to open a visible browser. Without
    the flag it stays headless as before.
 
-✻ Baked for 24s
+✻ Cogitated for 24s
 
 ※ recap: Built a prioritized Playwright E2E test suite for the Bunkly hotel booking app, covering P0/P1/P2 cases across auth, search, booking, payments, loyalty, reviews, and more. Next step is to run the tests against the app and fix any failures.
 
@@ -1319,7 +1319,7 @@
    input-dob — there's no profile-form wrapper or [name] attributes on those
   inputs.
 
-✻ Brewed for 20s
+✻ Cooked for 20s
 
 ❯ why are you matching the last 4 digits to the first 4 digits? please read the 
    code again.                                                                  
@@ -1346,7 +1346,7 @@
 ⏺ Fixed. The UI shows ••••1111 (last 4 of 4111111111111111), so the assertion
   now correctly checks for 1111.
 
-✻ Cogitated for 21s
+✻ Cooked for 21s
 
 ❯ picked up the wrong param for the test since there is no location query param 
    but rather the destination query param and hence it failed all the search    
@@ -1374,7 +1374,7 @@
 ⏺ Done. All four search tests use searchUrl() so they all pick up the fix
   automatically.
 
-✻ Crunched for 13s
+✻ Cogitated for 13s
 
 ❯ Uses the wrong order of the section such as (service-section being expected   
   on the page before clicking the service request button)                       
@@ -1416,7 +1416,7 @@
   - Switched selectOption({ index: 1 }) to selectOption('towels') — using the
   actual value from the component rather than a fragile index
 
-✻ Worked for 39s
+✻ Brewed for 39s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-185708
@@ -1562,7 +1562,7 @@
   after success the form shows "Alert created!". ALERT-02 then verifies
   toggle/delete on /account/price-alerts where the saved alerts are listed.
 
-✻ Cooked for 1m 5s
+✻ Baked for 1m 5s
 ❯ Tried to find the reviews by the upcoming reservations while from code it’s   
   pretty clear it’s only available for those who are checked_out or past        
   bookings not for upcoming!                                                    
@@ -1752,7 +1752,7 @@
   renders after setDefaultPaymentMethod completes and router.refresh()
   re-renders the page with the updated isDefault: true prop.
 
-✻ Worked for 25s
+✻ Crunched for 25s
 
 ❯ no i do not want you to change the entire test style, just wait for 10        
   seconds before you check again if the button is not visible                   
@@ -1779,7 +1779,7 @@
 
 ⏺ Done.
 
-✻ Churned for 6s
+✻ Baked for 6s
 ❯ wait for the deletion to happen and the re-render after   100 |   await       
   deleteBtns.first().click();                                                   
     101 |   await                                                               
@@ -1799,7 +1799,7 @@
 
 ⏺ Done.
 
-✻ Sautéed for 10s
+✻ Cogitated for 10s
 
 ❯ add the seed data in the seed script for a booking in the past for the sarah  
   user                                                                          
@@ -1856,7 +1856,7 @@
   will always appear in the past tab and the write-review button will show since
    it has no existing review.
 
-✻ Churned for 17s
+✻ Crunched for 17s
 
 ❯ why are you checking for loyalty-title to be present? if the page is not      
   redirected, it's fine, right?                                                 
@@ -1878,7 +1878,7 @@
 
 ⏺ Done.
 
-✻ Worked for 9s
+✻ Crunched for 9s
 
 ❯ remove the notifications tests                                                
 
@@ -1915,7 +1915,7 @@
 
 ⏺ Done.
 
-✻ Crunched for 9s
+✻ Brewed for 9s
 
 ❯ wait for points-history to load on the page vs just observing if it's there   
   ⎿  Read tests/account.spec.ts (107 lines)
@@ -1944,7 +1944,7 @@
   actively polls the DOM until the element appears rather than doing a one-shot
   assertion check.
 
-✻ Sautéed for 1m 56s
+✻ Baked for 1m 56s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-00345
@@ -2068,7 +2068,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Worked for 11s
+✻ Churned for 11s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
@@ -2096,7 +2096,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Baked for 17s
+✻ Cogitated for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -2118,4 +2118,115 @@
 
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
-✻ Churned for 11s
+✻ Crunched for 11s
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
+     -produce-a-prioritized-e2e-test-matrix-in-docscc.txt
+
+※ recap: Building a Playwright E2E test suite for the Bunkly hotel booking app. All tests are written and most bugs are fixed. Next: run the full test suite to verify everything passes.
+
+❯ run the tests in parallel                                                     
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(playwright.config.ts)
+  ⎿  Added 1 line, removed 1 line
+       4  
+       5  export default defineConfig({
+       6    testDir: "./tests",
+       7 -  workers: 1,                                                  
+       7 +  fullyParallel: true,                                         
+       8    retries: 0,
+       9    timeout: 120_000,
+      10    expect: { timeout: 120_000 },
+
+⏺ workers: 1 is removed (Playwright defaults to ~50% of CPU cores) and
+  fullyParallel: true is set so all tests across all files run concurrently. One
+   heads-up: several tests share Sarah's account data (payment methods,
+  bookings, loyalty), so if you hit race conditions causing count mismatches,
+  the fix is to scope those tests to separate files or add
+  test.describe.configure({ mode: 'serial' }) per file.
+
+✻ Sautéed for 34s
+
+※ recap: Building Playwright E2E tests for the Bunkly hotel booking app. All tests are written and configured with parallel execution, networkidle waits, and seeded messages for Sarah. Next: run the test suite to verify everything passes.
+
+❯ make sure the data is seeded once before the tests are run and then if you    
+  make any changes such as changing the username of the sarah and try to match  
+  the updated, after checking, do update it back to the original one in the     
+  same run                                                                      
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(tests/account.spec.ts)
+  ⎿  Added 10 lines, removed 2 lines
+       5    await page.goto('/account', { waitUntil: 'networkidle' });
+       6    await expect(page.getByTestId('account-title')).toBeVisible()
+          ;
+       7  
+       8 +  // Capture originals so we can restore after the test        
+       9 +  const originalName = await page.getByTestId('input-name').inp
+         +utValue();                                                     
+      10 +  const originalPhone = await page.getByTestId('input-phone').i
+         +nputValue();                                                   
+      11 +                                                               
+      12    const newName = `Sarah ${Date.now()}`;
+      13    await page.getByTestId('input-name').fill(newName);
+      14    await page.getByTestId('input-phone').fill('+1 555-9999');
+      15    await page.getByTestId('save-profile').click();
+      12 -  await page.waitForTimeout(12000);                            
+      16  
+      17    // Reload and verify persistence
+      15 -  await page.reload();                                         
+      18 +  await page.reload({ waitUntil: 'networkidle' });             
+      19    await expect(page.getByTestId('input-name')).toHaveValue(newN
+          ame);
+      20 +                                                               
+      21 +  // Restore original values so other tests see a clean state  
+      22 +  await page.getByTestId('input-name').fill(originalName);     
+      23 +  await page.getByTestId('input-phone').fill(originalPhone);   
+      24 +  await page.getByTestId('save-profile').click();              
+      25  });
+      26  
+      27  // ACCT-02 · Change password  [P1]
+
+⏺ ACCT-01 now reads the original name and phone before mutating them, and
+  restores both after verifying the change persisted on reload. The
+  waitForTimeout(12000) is also removed — page.reload({ waitUntil: 'networkidle'
+   }) provides the correct wait signal instead.
+
+✻ Sautéed for 51s
+
+❯ if i parallelize all the tests is the seed run before all the tests?          
+
+⏺ Not fully — here's the gap:
+
+  - The e2e project has dependencies: ["setup"], so setup always completes
+  before any e2e test starts. ✓
+  - The auth project has no dependency on setup, so it can start in parallel
+  with the seed run — meaning auth.spec.ts could be logging in while
+  auth.setup.ts is mid-truncation.
+
+  Fix is to add dependencies: ["setup"] to the auth project too:
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(playwright.config.ts)
+  ⎿  Added 2 lines
+      31      },
+      32      {
+      33        // Dedicated auth test. No storageState — exercises real 
+          login UI.
+      34 +      // Depends on setup so the seed runs before auth tests st
+         +art.                                                           
+      35        name: "auth",
+      36 +      dependencies: ["setup"],                                 
+      37        testMatch: "auth.spec.ts",
+      38      },
+      39    ],
+
+⏺ Now both e2e and auth projects depend on setup, so the seed always completes
+  before any test — regardless of worker count or parallelism level.
+
+✻ Churned for 19s
