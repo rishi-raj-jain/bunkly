@@ -31,7 +31,9 @@ export default defineConfig({
     },
     {
       // Dedicated auth test. No storageState — exercises real login UI.
+      // Depends on setup so the seed runs before auth tests start.
       name: "auth",
+      dependencies: ["setup"],
       testMatch: "auth.spec.ts",
     },
   ],

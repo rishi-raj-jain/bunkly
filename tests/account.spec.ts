@@ -5,14 +5,25 @@ test('ACCT-01: updates display name and phone, persists on reload', async ({ pag
   await page.goto('/account', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('account-title')).toBeVisible();
 
+  // Capture originals so we can restore after the test
+  const originalName = await page.getByTestId('input-name').inputValue();
+  const originalPhone = await page.getByTestId('input-phone').inputValue();
+
   const newName = `Sarah ${Date.now()}`;
   await page.getByTestId('input-name').fill(newName);
   await page.getByTestId('input-phone').fill('+1 555-9999');
   await page.getByTestId('save-profile').click();
+  await page.waitForTimeout(12000);
 
   // Reload and verify persistence
-  await page.reload();
+  await page.reload({ waitUntil: 'networkidle' });
   await expect(page.getByTestId('input-name')).toHaveValue(newName);
+
+  // Restore original values so other tests see a clean state
+  await page.getByTestId('input-name').fill(originalName);
+  await page.getByTestId('input-phone').fill(originalPhone);
+  await page.getByTestId('save-profile').click();
+  await page.waitForTimeout(12000);
 });
 
 // ACCT-02 · Change password  [P1]
