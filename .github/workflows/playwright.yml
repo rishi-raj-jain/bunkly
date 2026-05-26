@@ -47,6 +47,13 @@ jobs:
           path: .next/
           retention-days: 1
 
+      # npm run db:seed uses `tsx --env-file .env` which requires the file to
+      # exist. In CI the vars come from secrets, so we materialise the file.
+      - name: Write .env for seed script
+        run: |
+          printf 'DATABASE_URL=%s\nAUTH_SECRET=%s\nAUTH_URL=%s\n' \
+            "$DATABASE_URL" "$AUTH_SECRET" "$AUTH_URL" > .env
+
       - name: Install Playwright browsers (Chromium only)
         run: npx playwright install --with-deps chromium
 
