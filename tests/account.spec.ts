@@ -110,10 +110,14 @@ test('ACCT-05: deletes a non-default payment method', async ({ page }) => {
   await expect(page.getByTestId('add-payment-dialog')).not.toBeVisible();
 
   const deleteBtns = page.locator('[data-testid^="delete-pm-"]');
-  const initialCount = await deleteBtns.count();
-  await deleteBtns.first().click();
-  await page.locator('[data-testid^="confirm-delete-pm-"]').first().click();
-  await page.waitForTimeout(10000);
-  await expect(deleteBtns).toHaveCount(initialCount - 1);
+  const firstDeleteBtn = deleteBtns.first();
+  const deleteTestId = await firstDeleteBtn.getAttribute('data-testid');
+  await firstDeleteBtn.click();
+
+  const confirmTestId = deleteTestId!.replace('delete-pm-', 'confirm-delete-pm-');
+  await page.locator(`[data-testid="${confirmTestId}"]`).click();
+
+  // Wait for that specific card's delete button to disappear
+  await page.locator(`[data-testid="${deleteTestId}"]`).waitFor({ state: 'hidden' });
 });
 

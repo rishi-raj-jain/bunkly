@@ -22,18 +22,14 @@ test('BOOK-01: completes full booking funnel and lands on confirmation page', as
   await page.getByTestId('book-now').click();
   await expect(page).toHaveURL(/\/checkout/);
 
-  // Step 1 – review summary
-  await expect(page.getByTestId('step-review')).toBeVisible();
-  await page.getByTestId('continue-to-details').click();
-
-  // Step 2 – guest details
-  await expect(page.getByTestId('step-details')).toBeVisible();
+  // Step 1 – stay & guest (review summary + guest details combined)
+  await expect(page.getByTestId('step-stay-and-guest')).toBeVisible();
   await page.getByTestId('guest-name-input').fill('Sarah Johnson');
   await page.getByTestId('guest-email-input').fill('sarah@example.com');
   await page.getByTestId('guest-phone-input').fill('+1 555-0100');
   await page.getByTestId('continue-to-payment').click();
 
-  // Step 3 – payment
+  // Step 2 – payment
   await expect(page.getByTestId('step-payment')).toBeVisible();
   await page.getByTestId('card-name-input').fill('Sarah Johnson');
   await page.getByTestId('card-number-input').fill('4242424242424242');
