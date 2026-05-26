@@ -28,9 +28,9 @@ test('LOY-02: points history and tier progress are visible for an enrolled membe
   }
 
   await expect(page.getByTestId('points-balance')).toBeVisible();
-  await page.getByTestId('points-history').waitFor({ state: 'visible' });
   await expect(page.getByTestId('tier-progress')).toBeVisible();
   await expect(page.getByTestId('tier-benefits')).toBeVisible();
+  await expect(page.getByTestId('points-history')).toBeVisible();
 });
 
 // LOY-03 · Redeem loyalty points at checkout  [P0]

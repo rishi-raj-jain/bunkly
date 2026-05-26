@@ -81,7 +81,7 @@ export async function changePassword(input: {
   await db
     .update(users)
     .set({
-      passwordHash: `demo_hashed_${input.newPassword}`,
+      passwordHash: input.newPassword,
       updatedAt: new Date(),
     })
     .where(eq(users.id, session.user.id));

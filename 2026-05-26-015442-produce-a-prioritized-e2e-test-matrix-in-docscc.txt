@@ -53,7 +53,7 @@
   cover DB isolation, date arithmetic, and a @p0 tag strategy for a fast CI
   smoke gate.
 
-✻ Worked for 2m 8s
+✻ Cogitated for 2m 8s
 
 ※ recap: Created docs/cc-test-plan.md with 37 prioritized Playwright E2E test cases covering auth, booking funnel, account management, and secondary features. No immediate next action required unless you want to scaffold the actual test files. (disable recaps in /config)
 
@@ -178,7 +178,7 @@
   SEARCH-04 (search history) stayed P2 — it's a UX convenience, not in the
   purchase path.
 
-✻ Cogitated for 33s
+✻ Worked for 33s
 
 ❯ but how is wishlist a P1?                                                     
 
@@ -245,7 +245,7 @@
   only covers flows that materially affect a user's ability to book or manage an
    existing booking — wishlists don't meet that bar.
 
-✻ Baked for 21s
+✻ Worked for 21s
 ❯ why adding payment method is P1?                                              
 
 ⏺ Good challenge. The checkout flow (BOOK-01) covers payment entry directly —
@@ -328,7 +328,7 @@
   ever visiting /account/payment-methods. Saved card management is a
   repeat-customer convenience — same bucket as wishlists and price alerts.
 
-✻ Cogitated for 20s
+✻ Baked for 20s
 
 ❯ why did you move payment method to P2? It was in P1 and it should be a P0     
   instead since we need to be able to process money!                            
@@ -412,7 +412,7 @@
    right that payment management is revenue-critical and should have gone up,
   not down.
 
-✻ Sautéed for 24s
+✻ Cooked for 24s
 
 ❯ why loyalty program is P1?                                                    
 
@@ -528,7 +528,7 @@
   checkout) was in P2 but belongs at P0 for the same reason — if points don't
   apply correctly at payment time, repeat customers are directly impacted.
 
-✻ Cogitated for 31s
+✻ Churned for 31s
 
 ❯ why in the world is forgot password a P2?                                     
 
@@ -575,7 +575,7 @@
 ⏺ Done. Locked-out users who can't recover their account can't book — that's P0
   by definition. My original placement was wrong.
 
-✻ Sautéed for 12s
+✻ Cooked for 12s
 
 ❯ why any review related feature a P2? i believe that's one of the top actions  
   that people do on our app!                                                    
@@ -631,7 +631,7 @@
 ⏺ Done. All four review cases are now P1. REV-01/02/03 were already there —
   REV-04 just needed to catch up.
 
-✻ Crunched for 21s
+✻ Worked for 21s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-13262
@@ -688,7 +688,7 @@
    users stuck unable to register — both are auth-integrity failures that belong
    at P0.
 
-✻ Baked for 20s
+✻ Worked for 20s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-13293
@@ -949,7 +949,7 @@
   archive button testid). These are ready to un-skip once the features are
   built.
 
-✻ Worked for 13m 25s
+✻ Cooked for 13m 25s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-134653
@@ -986,7 +986,7 @@
   - Seeded accounts — so anyone picking up the repo knows the test credentials
   without digging into seed.ts
 
-✻ Crunched for 32s
+✻ Worked for 32s
 
 ❯ install the required libraries                                                
 
@@ -1001,7 +1001,7 @@
   the browser binaries (Chromium, Firefox, WebKit) are installed. You can now
   run the tests with npx playwright test.
 
-✻ Churned for 18s
+✻ Baked for 18s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-142543
@@ -1062,7 +1062,7 @@
   works)
   - README.md description — updated wording to mention the production server
 
-✻ Brewed for 24s
+✻ Crunched for 24s
 
 ❯ wait until 2 minutes for page navigations to be completed, right now  you     
   time out per 30 seconds                                                       
@@ -1081,7 +1081,7 @@
   actionTimeout covers click(), fill(), waitFor(), and similar interactions —
   both now set to 2 minutes.
 
-✻ Cogitated for 7s
+✻ Worked for 7s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-153841
@@ -1142,7 +1142,7 @@
   of the budget unnecessarily; waitForURL('/') already waits for the redirect to
    complete
 
-✻ Brewed for 22s
+✻ Cooked for 22s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-154928
@@ -1157,7 +1157,7 @@
 
 ⏺ Hi! What can I help you with?
 
-✻ Cogitated for 3s
+✻ Cooked for 3s
 
 ❯ which directory you are in right now and are you still in the /btw context?   
 
@@ -1167,7 +1167,7 @@
   And no, /btw isn't active — you ran it without arguments so it just printed
   its usage and exited. We're in the normal conversation context.
 
-✻ Cogitated for 6s
+✻ Churned for 6s
 
 ※ recap: We're building a Playwright E2E test suite for the Bunkly hotel booking app. Tests and config are written. Next step is to run the suite and fix any failures.
 
@@ -1179,7 +1179,7 @@
   which has storageState: "tests/.auth/user.json" configured. That means every
   test in the file starts with sarah's authenticated session already loaded.
 
-✻ Crunched for 5s
+✻ Brewed for 5s
 
 ❯ increase all the timeouts to 120 seconds for all operations, I see that some  
   tests still have 3 seconds as their timeout                                   
@@ -1195,7 +1195,7 @@
   minutes, and the per-operation navigationTimeout/actionTimeout also at 2
   minutes — so every layer is consistently at 120 seconds.
 
-✻ Cogitated for 17s
+✻ Crunched for 17s
 ❯ but in the tests report I see the following Error:                            
   expect(locator).toBeVisible() failed                                          
                                                                                 
@@ -1224,7 +1224,7 @@
   assertions. Previously it was defaulting to 5000ms regardless of
   actionTimeout.
 
-✻ Churned for 15s
+✻ Worked for 15s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-175424
@@ -1273,7 +1273,7 @@
 ⏺ Done. Run with HEADED=1 npx playwright test to open a visible browser. Without
    the flag it stays headless as before.
 
-✻ Cogitated for 24s
+✻ Baked for 24s
 
 ※ recap: Built a prioritized Playwright E2E test suite for the Bunkly hotel booking app, covering P0/P1/P2 cases across auth, search, booking, payments, loyalty, reviews, and more. Next step is to run the tests against the app and fix any failures.
 
@@ -1319,7 +1319,7 @@
    input-dob — there's no profile-form wrapper or [name] attributes on those
   inputs.
 
-✻ Cooked for 20s
+✻ Sautéed for 20s
 
 ❯ why are you matching the last 4 digits to the first 4 digits? please read the 
    code again.                                                                  
@@ -1374,7 +1374,7 @@
 ⏺ Done. All four search tests use searchUrl() so they all pick up the fix
   automatically.
 
-✻ Cogitated for 13s
+✻ Worked for 13s
 
 ❯ Uses the wrong order of the section such as (service-section being expected   
   on the page before clicking the service request button)                       
@@ -1416,7 +1416,7 @@
   - Switched selectOption({ index: 1 }) to selectOption('towels') — using the
   actual value from the component rather than a fragile index
 
-✻ Brewed for 39s
+✻ Cogitated for 39s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-25-185708
@@ -1562,7 +1562,7 @@
   after success the form shows "Alert created!". ALERT-02 then verifies
   toggle/delete on /account/price-alerts where the saved alerts are listed.
 
-✻ Baked for 1m 5s
+✻ Brewed for 1m 5s
 ❯ Tried to find the reviews by the upcoming reservations while from code it’s   
   pretty clear it’s only available for those who are checked_out or past        
   bookings not for upcoming!                                                    
@@ -1709,7 +1709,7 @@
   instead of skipping; ACCT-04 adds two cards to guarantee a non-default one
   exists to switch, and ACCT-05 adds a fresh card specifically to delete it
 
-✻ Worked for 1m 18s
+✻ Cogitated for 1m 18s
 
 ❯ /resume 
   ⎿  Resume cancelled
@@ -1752,7 +1752,7 @@
   renders after setDefaultPaymentMethod completes and router.refresh()
   re-renders the page with the updated isDefault: true prop.
 
-✻ Crunched for 25s
+✻ Brewed for 25s
 
 ❯ no i do not want you to change the entire test style, just wait for 10        
   seconds before you check again if the button is not visible                   
@@ -1779,7 +1779,7 @@
 
 ⏺ Done.
 
-✻ Baked for 6s
+✻ Brewed for 6s
 ❯ wait for the deletion to happen and the re-render after   100 |   await       
   deleteBtns.first().click();                                                   
     101 |   await                                                               
@@ -1799,7 +1799,7 @@
 
 ⏺ Done.
 
-✻ Cogitated for 10s
+✻ Churned for 10s
 
 ❯ add the seed data in the seed script for a booking in the past for the sarah  
   user                                                                          
@@ -1856,7 +1856,7 @@
   will always appear in the past tab and the write-review button will show since
    it has no existing review.
 
-✻ Crunched for 17s
+✻ Sautéed for 17s
 
 ❯ why are you checking for loyalty-title to be present? if the page is not      
   redirected, it's fine, right?                                                 
@@ -1878,7 +1878,7 @@
 
 ⏺ Done.
 
-✻ Crunched for 9s
+✻ Sautéed for 9s
 
 ❯ remove the notifications tests                                                
 
@@ -1915,7 +1915,7 @@
 
 ⏺ Done.
 
-✻ Brewed for 9s
+✻ Cooked for 9s
 
 ❯ wait for points-history to load on the page vs just observing if it's there   
   ⎿  Read tests/account.spec.ts (107 lines)
@@ -2046,7 +2046,7 @@
   from the host, and a follow-up from Sarah. Run npm run db:seed to apply it,
   then /messages will show a populated inbox for Sarah.
 
-✻ Sautéed for 32s
+✻ Cogitated for 32s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003725
@@ -2068,7 +2068,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Churned for 11s
+✻ Worked for 11s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
@@ -2096,7 +2096,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Cogitated for 17s
+✻ Crunched for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -2118,7 +2118,7 @@
 
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
-✻ Crunched for 11s
+✻ Brewed for 11s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
@@ -2196,7 +2196,7 @@
   waitForTimeout(12000) is also removed — page.reload({ waitUntil: 'networkidle'
    }) provides the correct wait signal instead.
 
-✻ Sautéed for 51s
+✻ Churned for 51s
 
 ❯ if i parallelize all the tests is the seed run before all the tests?          
 
@@ -2229,4 +2229,45 @@
 ⏺ Now both e2e and auth projects depend on setup, so the seed always completes
   before any test — regardless of worker count or parallelism level.
 
-✻ Churned for 19s
+✻ Sautéed for 19s
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-014135
+     -produce-a-prioritized-e2e-test-matrix-in-docscc.txt
+
+※ recap: Building E2E Playwright tests for the Bunkly hotel booking app. All tests are written and configured. Next step is to run the full test suite and fix any failures.
+
+❯ in setting a non-default card as default, after you click the set as default  
+  button, then wait for few seconds/minutes until it's gone to be reflected     
+  onto the other card                                                           
+
+⏺ Update(tests/account.spec.ts)
+  ⎿  Error editing file
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Update(tests/account.spec.ts)
+  ⎿  Added 4 lines, removed 1 line
+      89  
+      90    const setDefaultBtns = page.locator('[data-testid^="set-defau
+          lt-pm-"]');
+      91    await expect(setDefaultBtns.first()).toBeVisible();
+      92 +  // Capture the exact testid so we can track that specific but
+         +ton disappearing                                               
+      93 +  const firstBtnTestId = await setDefaultBtns.first().getAttrib
+         +ute('data-testid');                                            
+      94    await setDefaultBtns.first().click();
+      93 -  await expect(setDefaultBtns.first()).not.toBeVisible();      
+      95 +  // Wait until that card's set-default button is gone, confirm
+         +ing it's now the default                                       
+      96 +  await page.locator(`[data-testid="${firstBtnTestId}"]`).waitF
+         +or({ state: 'hidden' });                                       
+      97  });
+      98  
+      99  // ACCT-05 · Delete payment method  [P0]
+
+⏺ ACCT-04 now captures the specific data-testid of the clicked button before
+  clicking, then calls waitFor({ state: 'hidden' }) on that exact element — so
+  it waits however long it takes for the server action to complete and the UI to
+   re-render, rather than a fixed timeout.
+✻ Worked for 45s

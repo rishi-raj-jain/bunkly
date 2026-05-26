@@ -89,9 +89,11 @@ test('ACCT-04: sets a non-default card as default', async ({ page }) => {
 
   const setDefaultBtns = page.locator('[data-testid^="set-default-pm-"]');
   await expect(setDefaultBtns.first()).toBeVisible();
+  // Capture the exact testid so we can track that specific button disappearing
+  const firstBtnTestId = await setDefaultBtns.first().getAttribute('data-testid');
   await setDefaultBtns.first().click();
-  await page.waitForTimeout(10000);
-  await expect(setDefaultBtns.first()).not.toBeVisible();
+  // Wait until that card's set-default button is gone, confirming it's now the default
+  await page.locator(`[data-testid="${firstBtnTestId}"]`).waitFor({ state: 'hidden' });
 });
 
 // ACCT-05 · Delete payment method  [P0]

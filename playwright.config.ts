@@ -4,7 +4,7 @@ const headed = !!process.env.HEADED;
 
 export default defineConfig({
   testDir: "./tests",
-  workers: 1,
+  fullyParallel: true,
   retries: 0,
   timeout: 120_000,
   expect: { timeout: 120_000 },
