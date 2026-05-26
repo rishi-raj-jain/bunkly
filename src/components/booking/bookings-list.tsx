@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
   Plane,
   Clock,
   XCircle,
+  ChevronDown,
 } from "lucide-react";
 
 type BookingSummary = {
@@ -37,15 +38,18 @@ type BookingSummary = {
   imageUrl: string | null;
 };
 
-const STATUS_STYLES: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
-  pending: { variant: "outline", label: "Pending" },
-  confirmed: { variant: "default", label: "Confirmed" },
-  checked_in: { variant: "default", label: "Checked In" },
-  checked_out: { variant: "secondary", label: "Checked Out" },
-  cancelled: { variant: "destructive", label: "Cancelled" },
-  no_show: { variant: "destructive", label: "No Show" },
-  waitlisted: { variant: "outline", label: "Waitlisted" },
-};
+const STATUS_STYLES: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> =
+  {
+    pending: { variant: "outline", label: "Pending" },
+    confirmed: { variant: "default", label: "Confirmed" },
+    checked_in: { variant: "default", label: "Checked In" },
+    checked_out: { variant: "secondary", label: "Checked Out" },
+    cancelled: { variant: "destructive", label: "Cancelled" },
+    no_show: { variant: "destructive", label: "No Show" },
+    waitlisted: { variant: "outline", label: "Waitlisted" },
+  };
+
+type TripTab = "upcoming" | "past" | "cancelled";
 
 function BookingCard({ booking }: { booking: BookingSummary }) {
   const status = STATUS_STYLES[booking.status] || STATUS_STYLES.pending;
@@ -59,7 +63,6 @@ function BookingCard({ booking }: { booking: BookingSummary }) {
       <Card className="group transition-all duration-200 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5">
         <CardContent className="p-0">
           <div className="flex flex-col sm:flex-row">
-            {/* Property Image */}
             <div className="relative h-48 w-full overflow-hidden rounded-t-lg sm:h-auto sm:w-48 sm:rounded-l-lg sm:rounded-tr-none">
               {booking.imageUrl ? (
                 <img
@@ -81,7 +84,6 @@ function BookingCard({ booking }: { booking: BookingSummary }) {
               </Badge>
             </div>
 
-            {/* Booking Details */}
             <div className="flex flex-1 flex-col justify-between p-5">
               <div>
                 <div className="flex items-start justify-between">
@@ -105,7 +107,10 @@ function BookingCard({ booking }: { booking: BookingSummary }) {
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
-                <span className="flex items-center gap-1.5 text-foreground" data-testid={`booking-dates-${booking.confirmationNo}`}>
+                <span
+                  className="flex items-center gap-1.5 text-foreground"
+                  data-testid={`booking-dates-${booking.confirmationNo}`}
+                >
                   <Calendar className="h-4 w-4 text-accent" />
                   {formatDate(booking.checkIn)} — {formatDate(booking.checkOut)}
                 </span>
@@ -119,7 +124,10 @@ function BookingCard({ booking }: { booking: BookingSummary }) {
                   {booking.children ? `, ${booking.children} child${booking.children !== 1 ? "ren" : ""}` : ""}
                 </span>
                 {booking.total && (
-                  <span className="ml-auto font-semibold text-foreground" data-testid={`booking-total-${booking.confirmationNo}`}>
+                  <span
+                    className="ml-auto font-semibold text-foreground"
+                    data-testid={`booking-total-${booking.confirmationNo}`}
+                  >
                     {formatCurrency(parseFloat(booking.total), booking.currency || "USD")}
                   </span>
                 )}
@@ -132,7 +140,45 @@ function BookingCard({ booking }: { booking: BookingSummary }) {
   );
 }
 
-type Tab = "upcoming" | "past" | "cancelled";
+function BookingSectionEmpty({
+  variant,
+}: {
+  variant: TripTab;
+}) {
+  return (
+    <div
+      className="rounded-lg border border-dashed border-border bg-secondary/40 py-12 text-center"
+      data-testid={`bookings-empty-${variant}`}
+    >
+      {variant === "upcoming" && (
+        <>
+          <Plane className="mx-auto h-12 w-12 text-muted" />
+          <h3 className="mt-4 text-lg font-semibold text-foreground">No upcoming trips</h3>
+          <p className="mt-1 text-sm text-muted">Time to plan your next adventure!</p>
+          <Link href="/search">
+            <Button variant="accent" className="mt-6" data-testid="search-cta">
+              Search Properties
+            </Button>
+          </Link>
+        </>
+      )}
+      {variant === "past" && (
+        <>
+          <Clock className="mx-auto h-12 w-12 text-muted" />
+          <h3 className="mt-4 text-lg font-semibold text-foreground">No past trips</h3>
+          <p className="mt-1 text-sm text-muted">Your travel history will appear here.</p>
+        </>
+      )}
+      {variant === "cancelled" && (
+        <>
+          <XCircle className="mx-auto h-12 w-12 text-muted" />
+          <h3 className="mt-4 text-lg font-semibold text-foreground">No cancelled trips</h3>
+          <p className="mt-1 text-sm text-muted">Nothing to see here — that&apos;s a good thing!</p>
+        </>
+      )}
+    </div>
+  );
+}
 
 export function BookingsList({
   upcoming,
@@ -143,80 +189,89 @@ export function BookingsList({
   past: BookingSummary[];
   cancelled: BookingSummary[];
 }) {
-  const [activeTab, setActiveTab] = useState<Tab>("upcoming");
+  const upcomingRef = useRef<HTMLElement>(null);
+  const pastRef = useRef<HTMLElement>(null);
+  const cancelledRef = useRef<HTMLElement>(null);
 
-  const tabs: { key: Tab; label: string; count: number; icon: React.ReactNode }[] = [
-    { key: "upcoming", label: "Upcoming", count: upcoming.length, icon: <Plane className="h-4 w-4" /> },
-    { key: "past", label: "Past", count: past.length, icon: <Clock className="h-4 w-4" /> },
-    { key: "cancelled", label: "Cancelled", count: cancelled.length, icon: <XCircle className="h-4 w-4" /> },
+  const jumps: {
+    key: TripTab;
+    label: string;
+    count: number;
+    icon: React.ReactNode;
+    ref: React.RefObject<HTMLElement | null>;
+  }[] = [
+    { key: "upcoming", label: "Upcoming", count: upcoming.length, icon: <Plane className="h-4 w-4" />, ref: upcomingRef },
+    { key: "past", label: "Past", count: past.length, icon: <Clock className="h-4 w-4" />, ref: pastRef },
+    { key: "cancelled", label: "Cancelled", count: cancelled.length, icon: <XCircle className="h-4 w-4" />, ref: cancelledRef },
   ];
 
-  const activeBookings = activeTab === "upcoming" ? upcoming : activeTab === "past" ? past : cancelled;
+  function scrollToSection(ref: React.RefObject<HTMLElement | null>) {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderSection(bookings: BookingSummary[], tab: TripTab) {
+    return (
+      <>
+        {bookings.length > 0 ? (
+          <div className="space-y-4" data-testid={`bookings-list-${tab}`}>
+            {bookings.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </div>
+        ) : (
+          <BookingSectionEmpty variant={tab} />
+        )}
+      </>
+    );
+  }
 
   return (
     <div>
-      {/* Tabs */}
-      <div className="flex gap-1 rounded-lg border border-border bg-secondary p-1" data-testid="bookings-tabs">
-        {tabs.map((tab) => (
+      {/* Jump navigation: scroll feed instead of swapping a single tab panel */}
+      <div
+        className="sticky top-0 z-10 -mx-1 mb-8 flex flex-wrap items-center gap-2 border-b border-border bg-background pb-4 pt-1"
+        data-testid="bookings-jump-nav"
+      >
+        {jumps.map((j) => (
           <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-all ${
-              activeTab === tab.key
-                ? "bg-primary text-white shadow-sm"
-                : "text-muted hover:text-foreground"
-            }`}
-            data-testid={`tab-${tab.key}`}
+            key={j.key}
+            type="button"
+            onClick={() => scrollToSection(j.ref)}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-4 py-2 text-sm font-medium text-foreground shadow-sm transition hover:border-primary hover:bg-secondary/90"
+            data-testid={`tab-${j.key}`}
           >
-            {tab.icon}
-            {tab.label}
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs ${
-                activeTab === tab.key
-                  ? "bg-white/20 text-white"
-                  : "bg-border text-muted"
-              }`}
-            >
-              {tab.count}
-            </span>
+            {j.icon}
+            {j.label}
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{j.count}</span>
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground opacity-70" aria-hidden />
           </button>
         ))}
       </div>
 
-      {/* Booking Cards */}
-      <div className="mt-6 space-y-4" data-testid="bookings-list">
-        {activeBookings.length > 0 ? (
-          activeBookings.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} />
-          ))
-        ) : (
-          <div className="rounded-lg border border-border bg-secondary/50 py-16 text-center" data-testid="bookings-empty">
-            {activeTab === "upcoming" ? (
-              <>
-                <Plane className="mx-auto h-12 w-12 text-muted" />
-                <h3 className="mt-4 text-lg font-semibold text-foreground">No upcoming trips</h3>
-                <p className="mt-1 text-sm text-muted">Time to plan your next adventure!</p>
-                <Link href="/search">
-                  <Button variant="accent" className="mt-6" data-testid="search-cta">
-                    Search Properties
-                  </Button>
-                </Link>
-              </>
-            ) : activeTab === "past" ? (
-              <>
-                <Clock className="mx-auto h-12 w-12 text-muted" />
-                <h3 className="mt-4 text-lg font-semibold text-foreground">No past trips</h3>
-                <p className="mt-1 text-sm text-muted">Your travel history will appear here.</p>
-              </>
-            ) : (
-              <>
-                <XCircle className="mx-auto h-12 w-12 text-muted" />
-                <h3 className="mt-4 text-lg font-semibold text-foreground">No cancelled trips</h3>
-                <p className="mt-1 text-sm text-muted">Nothing to see here — that&apos;s a good thing!</p>
-              </>
-            )}
+      <div className="space-y-16">
+        <section ref={upcomingRef} id="bookings-upcoming" className="scroll-mt-28" data-testid="bookings-section-upcoming">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-xl font-semibold text-foreground">Upcoming trips</h2>
+            <p className="text-sm text-muted">Where you&apos;re headed next.</p>
           </div>
-        )}
+          {renderSection(upcoming, "upcoming")}
+        </section>
+
+        <section ref={pastRef} id="bookings-past" className="scroll-mt-28" data-testid="bookings-section-past">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-xl font-semibold text-foreground">Past stays</h2>
+            <p className="text-sm text-muted">Completed journeys and receipts.</p>
+          </div>
+          {renderSection(past, "past")}
+        </section>
+
+        <section ref={cancelledRef} id="bookings-cancelled" className="scroll-mt-28 pb-8" data-testid="bookings-section-cancelled">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-xl font-semibold text-foreground">Cancelled</h2>
+            <p className="text-sm text-muted">Reservations you ended early.</p>
+          </div>
+          {renderSection(cancelled, "cancelled")}
+        </section>
       </div>
     </div>
   );

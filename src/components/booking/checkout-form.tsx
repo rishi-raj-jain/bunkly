@@ -48,12 +48,12 @@ type CheckoutProps = {
   userEmail: string | null;
 };
 
-type Step = "review" | "details" | "payment";
+type Step = "stay_guest" | "payment";
 
 export function CheckoutForm(props: CheckoutProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [step, setStep] = useState<Step>("review");
+  const [step, setStep] = useState<Step>("stay_guest");
   const [error, setError] = useState<string | null>(null);
 
   // Guest details form
@@ -83,15 +83,9 @@ export function CheckoutForm(props: CheckoutProps) {
   const total = subtotal + taxes + fees - promoDiscount;
 
   const steps: { key: Step; label: string; number: number }[] = [
-    { key: "review", label: "Review", number: 1 },
-    { key: "details", label: "Guest Details", number: 2 },
-    { key: "payment", label: "Payment", number: 3 },
+    { key: "stay_guest", label: "Stay & guest", number: 1 },
+    { key: "payment", label: "Payment", number: 2 },
   ];
-
-  function handleContinueToDetails() {
-    setStep("details");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
 
   function handleContinueToPayment() {
     if (!guestName.trim() || !guestEmail.trim()) {
@@ -100,6 +94,12 @@ export function CheckoutForm(props: CheckoutProps) {
     }
     setError(null);
     setStep("payment");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function handleBackToStayGuest() {
+    setStep("stay_guest");
+    setError(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -184,242 +184,230 @@ export function CheckoutForm(props: CheckoutProps) {
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
         {/* Main Content */}
         <div className="space-y-6 lg:col-span-2">
-          {/* Step 1: Review */}
-          {step === "review" && (
-            <Card data-testid="step-review">
+          {/* Step 1: Stay summary + guest details (merged) */}
+          {step === "stay_guest" && (
+            <Card data-testid="step-stay-and-guest">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Calendar className="h-5 w-5 text-accent" />
-                  Review Your Stay
+                  Stay &amp; guest
                 </CardTitle>
+                <p className="text-sm text-muted">
+                  Review your reservation and confirm who&apos;s checking in—all in one
+                  step before payment.
+                </p>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {/* Property info */}
-                <div className="flex gap-4">
-                  {props.propertyImage && (
-                    <img
-                      src={props.propertyImage}
-                      alt={props.propertyName}
-                      className="h-24 w-32 rounded-lg object-cover"
-                    />
-                  )}
-                  <div>
-                    <h3 className="font-semibold text-foreground">
-                      {props.propertyName}
-                    </h3>
-                    <p className="flex items-center gap-1 text-sm text-muted">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {props.propertyCity}, {props.propertyCountry}
-                    </p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <Badge variant="secondary" className="capitalize text-xs">
-                        {props.roomCategory}
-                      </Badge>
-                      <span className="text-sm text-foreground">
-                        {props.roomTypeName}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Dates */}
-                <div className="grid gap-3 rounded-lg bg-secondary/50 p-4 sm:grid-cols-3">
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                      Check-in
-                    </p>
-                    <p className="mt-1 font-semibold text-foreground">
-                      {formatDate(props.checkIn)}
-                    </p>
-                    <p className="text-xs text-muted">
-                      After {props.checkInTime || "3:00 PM"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                      Check-out
-                    </p>
-                    <p className="mt-1 font-semibold text-foreground">
-                      {formatDate(props.checkOut)}
-                    </p>
-                    <p className="text-xs text-muted">
-                      Before {props.checkOutTime || "11:00 AM"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium uppercase tracking-wider text-muted">
-                      Guests
-                    </p>
-                    <p className="mt-1 font-semibold text-foreground">
-                      {props.guests} guest{props.guests !== 1 ? "s" : ""}
-                    </p>
-                    <p className="text-xs text-muted">
-                      {nights} night{nights !== 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Nightly rate breakdown */}
-                <div>
-                  <p className="text-sm font-medium text-foreground">
-                    Nightly Rate Breakdown
-                  </p>
-                  <div className="mt-2 max-h-40 space-y-1 overflow-y-auto text-sm">
-                    {props.nightlyRates.map((nr) => (
-                      <div
-                        key={nr.date}
-                        className="flex justify-between text-muted"
-                      >
-                        <span>{formatDate(nr.date)}</span>
-                        <span>{formatCurrency(nr.rate)}</span>
+              <CardContent className="space-y-6">
+                {/* Property summary */}
+                <section data-testid="step-review-summary" className="space-y-4">
+                  <div className="flex gap-4">
+                    {props.propertyImage && (
+                      <img
+                        src={props.propertyImage}
+                        alt={props.propertyName}
+                        className="h-24 w-32 rounded-lg object-cover"
+                      />
+                    )}
+                    <div>
+                      <h3 className="font-semibold text-foreground">
+                        {props.propertyName}
+                      </h3>
+                      <p className="flex items-center gap-1 text-sm text-muted">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {props.propertyCity}, {props.propertyCountry}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Badge variant="secondary" className="capitalize text-xs">
+                          {props.roomCategory}
+                        </Badge>
+                        <span className="text-sm text-foreground">
+                          {props.roomTypeName}
+                        </span>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Cancellation */}
-                <div className="flex items-start gap-2 rounded-lg border border-border p-3">
-                  <Shield className="mt-0.5 h-4 w-4 text-accent" />
+                  <div className="grid gap-3 rounded-lg bg-secondary/50 p-4 sm:grid-cols-3">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                        Check-in
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {formatDate(props.checkIn)}
+                      </p>
+                      <p className="text-xs text-muted">
+                        After {props.checkInTime || "3:00 PM"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                        Check-out
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {formatDate(props.checkOut)}
+                      </p>
+                      <p className="text-xs text-muted">
+                        Before {props.checkOutTime || "11:00 AM"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wider text-muted">
+                        Guests
+                      </p>
+                      <p className="mt-1 font-semibold text-foreground">
+                        {props.guests} guest{props.guests !== 1 ? "s" : ""}
+                      </p>
+                      <p className="text-xs text-muted">
+                        {nights} night{nights !== 1 ? "s" : ""}
+                      </p>
+                    </div>
+                  </div>
+
                   <div>
-                    <p className="text-sm font-medium capitalize text-foreground">
-                      {props.cancellationPolicy.replace("_", " ")} cancellation
+                    <p className="text-sm font-medium text-foreground">
+                      Nightly rate breakdown
                     </p>
-                    <p className="text-xs text-muted">
-                      {props.cancellationPolicy === "free"
-                        ? "Free cancellation up to 24 hours before check-in."
-                        : props.cancellationPolicy === "moderate"
-                        ? "Free cancellation up to 5 days before check-in. 50% refund after."
-                        : props.cancellationPolicy === "strict"
-                        ? "50% refund up to 1 week before check-in. No refund after."
-                        : "This reservation is non-refundable."}
-                    </p>
+                    <div className="mt-2 max-h-40 space-y-1 overflow-y-auto text-sm">
+                      {props.nightlyRates.map((nr) => (
+                        <div
+                          key={nr.date}
+                          className="flex justify-between text-muted"
+                        >
+                          <span>{formatDate(nr.date)}</span>
+                          <span>{formatCurrency(nr.rate)}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Promo Code */}
-                <div className="rounded-lg border border-border p-3">
-                  <p className="mb-2 text-sm font-medium text-foreground">
-                    Have a promo or corporate code?
-                  </p>
-                  <div className="flex gap-2">
-                    <Input
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value)}
-                      placeholder="Enter code"
-                      className="flex-1"
-                      data-testid="promo-code-input"
-                    />
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        if (promoCode.trim()) {
-                          setPromoApplied(true);
-                          setPromoDiscount(25);
-                        }
-                      }}
-                      disabled={promoApplied}
-                      data-testid="apply-promo-code"
-                    >
-                      {promoApplied ? "Applied" : "Apply"}
-                    </Button>
+                  <div className="flex items-start gap-2 rounded-lg border border-border p-3">
+                    <Shield className="mt-0.5 h-4 w-4 text-accent" />
+                    <div>
+                      <p className="text-sm font-medium capitalize text-foreground">
+                        {props.cancellationPolicy.replace("_", " ")} cancellation
+                      </p>
+                      <p className="text-xs text-muted">
+                        {props.cancellationPolicy === "free"
+                          ? "Free cancellation up to 24 hours before check-in."
+                          : props.cancellationPolicy === "moderate"
+                          ? "Free cancellation up to 5 days before check-in. 50% refund after."
+                          : props.cancellationPolicy === "strict"
+                          ? "50% refund up to 1 week before check-in. No refund after."
+                          : "This reservation is non-refundable."}
+                      </p>
+                    </div>
                   </div>
-                  {promoApplied && (
-                    <p className="mt-1 text-xs text-accent" data-testid="promo-success">
-                      Code applied! ${promoDiscount} discount.
+
+                  <div className="rounded-lg border border-border p-3">
+                    <p className="mb-2 text-sm font-medium text-foreground">
+                      Have a promo or corporate code?
                     </p>
-                  )}
-                </div>
+                    <div className="flex gap-2">
+                      <Input
+                        value={promoCode}
+                        onChange={(e) => setPromoCode(e.target.value)}
+                        placeholder="Enter code"
+                        className="flex-1"
+                        data-testid="promo-code-input"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          if (promoCode.trim()) {
+                            setPromoApplied(true);
+                            setPromoDiscount(25);
+                          }
+                        }}
+                        disabled={promoApplied}
+                        data-testid="apply-promo-code"
+                      >
+                        {promoApplied ? "Applied" : "Apply"}
+                      </Button>
+                    </div>
+                    {promoApplied && (
+                      <p className="mt-1 text-xs text-accent" data-testid="promo-success">
+                        Code applied! ${promoDiscount} discount.
+                      </p>
+                    )}
+                  </div>
+                </section>
 
-                <Button
-                  variant="accent"
-                  size="lg"
-                  className="w-full"
-                  onClick={handleContinueToDetails}
-                  data-testid="continue-to-details"
-                >
-                  Continue to Guest Details
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+                <hr className="border-border" />
 
-          {/* Step 2: Guest Details */}
-          {step === "details" && (
-            <Card data-testid="step-details">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5 text-accent" />
-                  Guest Details
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* Guest details */}
+                <section data-testid="step-guest-fields" className="space-y-4">
+                  <div className="flex items-center gap-2 font-medium text-foreground">
+                    <User className="h-5 w-5 text-accent" />
+                    Guest contact
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-foreground">
+                        Full Name *
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                        <Input
+                          value={guestName}
+                          onChange={(e) => setGuestName(e.target.value)}
+                          placeholder="John Doe"
+                          className="pl-10"
+                          data-testid="guest-name-input"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-foreground">
+                        Email Address *
+                      </label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                        <Input
+                          type="email"
+                          value={guestEmail}
+                          onChange={(e) => setGuestEmail(e.target.value)}
+                          placeholder="john@example.com"
+                          className="pl-10"
+                          data-testid="guest-email-input"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="mb-1 block text-sm font-medium text-foreground">
-                      Full Name *
+                      Phone Number
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+                      <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
                       <Input
-                        value={guestName}
-                        onChange={(e) => setGuestName(e.target.value)}
-                        placeholder="John Doe"
+                        type="tel"
+                        value={guestPhone}
+                        onChange={(e) => setGuestPhone(e.target.value)}
+                        placeholder="+1 (555) 123-4567"
                         className="pl-10"
-                        data-testid="guest-name-input"
+                        data-testid="guest-phone-input"
                       />
                     </div>
                   </div>
+
                   <div>
                     <label className="mb-1 block text-sm font-medium text-foreground">
-                      Email Address *
+                      Special Requests
                     </label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-                      <Input
-                        type="email"
-                        value={guestEmail}
-                        onChange={(e) => setGuestEmail(e.target.value)}
-                        placeholder="john@example.com"
-                        className="pl-10"
-                        data-testid="guest-email-input"
+                      <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-muted" />
+                      <textarea
+                        value={specialRequests}
+                        onChange={(e) => setSpecialRequests(e.target.value)}
+                        placeholder="Late check-in, extra pillows, dietary needs..."
+                        rows={3}
+                        className="w-full rounded-lg border border-border bg-secondary/50 py-2 pl-10 pr-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                        data-testid="special-requests-input"
                       />
                     </div>
                   </div>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">
-                    Phone Number
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
-                    <Input
-                      type="tel"
-                      value={guestPhone}
-                      onChange={(e) => setGuestPhone(e.target.value)}
-                      placeholder="+1 (555) 123-4567"
-                      className="pl-10"
-                      data-testid="guest-phone-input"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">
-                    Special Requests
-                  </label>
-                  <div className="relative">
-                    <MessageSquare className="absolute left-3 top-3 h-4 w-4 text-muted" />
-                    <textarea
-                      value={specialRequests}
-                      onChange={(e) => setSpecialRequests(e.target.value)}
-                      placeholder="Late check-in, extra pillows, dietary needs..."
-                      rows={3}
-                      className="w-full rounded-lg border border-border bg-secondary/50 py-2 pl-10 pr-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
-                      data-testid="special-requests-input"
-                    />
-                  </div>
-                </div>
+                </section>
 
                 {error && (
                   <p className="text-sm text-destructive" data-testid="details-error">
@@ -427,32 +415,20 @@ export function CheckoutForm(props: CheckoutProps) {
                   </p>
                 )}
 
-                <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setStep("review");
-                      setError(null);
-                    }}
-                    data-testid="back-to-review"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="accent"
-                    size="lg"
-                    className="flex-1"
-                    onClick={handleContinueToPayment}
-                    data-testid="continue-to-payment"
-                  >
-                    Continue to Payment
-                  </Button>
-                </div>
+                <Button
+                  variant="accent"
+                  size="lg"
+                  className="w-full"
+                  onClick={handleContinueToPayment}
+                  data-testid="continue-to-payment"
+                >
+                  Continue to Payment
+                </Button>
               </CardContent>
             </Card>
           )}
 
-          {/* Step 3: Payment */}
+          {/* Step 2: Payment */}
           {step === "payment" && (
             <Card data-testid="step-payment">
               <CardHeader>
@@ -547,11 +523,8 @@ export function CheckoutForm(props: CheckoutProps) {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      setStep("details");
-                      setError(null);
-                    }}
-                    data-testid="back-to-details"
+                    onClick={handleBackToStayGuest}
+                    data-testid="back-to-stay-guest"
                   >
                     Back
                   </Button>
