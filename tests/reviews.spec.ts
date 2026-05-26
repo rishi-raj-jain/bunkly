@@ -59,7 +59,10 @@ test('REV-04: helpful vote increments count; clicking again toggles it back', as
   await expect(page.getByTestId('reviews-title')).toBeVisible();
 
   const voteBtn = page.locator('[data-testid^="vote-review-"]').first();
-  const hasVoteBtn = await voteBtn.isVisible({ timeout: 120_000 }).catch(() => false);
+  const hasVoteBtn = await voteBtn
+    .waitFor({ state: 'visible', timeout: 10_000 })
+    .then(() => true)
+    .catch(() => false);
   if (!hasVoteBtn) {
     test.skip(); // no reviews on this property
     return;

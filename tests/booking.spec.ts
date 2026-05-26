@@ -1,5 +1,25 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { PARIS_SLUG, BOOK_CHECKIN, BOOK_CHECKOUT, futureDate } from './helpers';
+
+// Serial: tests mutate shared bookings (cancel, modify, add-ons, check-in).
+// Running in parallel causes races where one test cancels a booking another test
+// is about to navigate into.
+test.describe.configure({ mode: 'serial' });
+
+/**
+ * Returns the first booking card in the upcoming section that matches the given
+ * status badge text. Scoping to the section avoids accidentally picking past or
+ * cancelled cards, and filtering by status ensures the booking detail page will
+ * actually render the action we're about to test (add-on, cancel, modify, etc.).
+ */
+function firstUpcomingCard(page: Page, status: 'Confirmed' | 'Pending' | 'Checked In' | 'any' = 'any') {
+  const section = page.getByTestId('bookings-section-upcoming');
+  const cards = section.locator('[data-testid^="booking-card-"]');
+  if (status === 'any') return cards.first();
+  return cards.filter({
+    has: page.locator('[data-testid^="booking-status-"]', { hasText: status }),
+  }).first();
+}
 
 // ─── P0 ──────────────────────────────────────────────────────────────────────
 
@@ -47,16 +67,14 @@ test('BOOK-01: completes full booking funnel and lands on confirmation page', as
 test('BOOK-02: bookings list shows at least one seeded booking', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
   await expect(page.getByTestId('bookings-title')).toBeVisible();
-  // At least one upcoming booking card
-  await page.getByTestId('tab-upcoming').click();
-  await expect(page.locator('[data-testid^="booking-card-"]').first()).toBeVisible();
+  await expect(page.getByTestId('bookings-section-upcoming').locator('[data-testid^="booking-card-"]').first()).toBeVisible();
 });
 
 // BOOK-03 · Cancel a booking
 test('BOOK-03: cancels an upcoming booking and shows cancelled status', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
+  // Cancel button only renders for confirmed/pending bookings
+  await firstUpcomingCard(page, 'Confirmed').click();
   await expect(page).toHaveURL(/\/bookings\//);
 
   await page.getByTestId('cancel-booking').click();
@@ -71,8 +89,7 @@ test('BOOK-03: cancels an upcoming booking and shows cancelled status', async ({
 // BOOK-04 · View booking detail
 test('BOOK-04: booking detail shows dates, room type, and total', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
+  await firstUpcomingCard(page).click();
 
   await expect(page.getByTestId('booking-detail-title')).toBeVisible();
   await expect(page.getByTestId('booking-detail-status')).toBeVisible();
@@ -85,8 +102,8 @@ test('BOOK-04: booking detail shows dates, room type, and total', async ({ page 
 // BOOK-05 · Modify booking dates
 test('BOOK-05: modifies booking dates and shows success', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
+  // Modify button only renders for confirmed/pending bookings
+  await firstUpcomingCard(page, 'Confirmed').click();
 
   await page.getByTestId('modify-booking-button').click();
   await expect(page.getByTestId('modify-booking-dialog')).toBeVisible();
@@ -103,13 +120,19 @@ test('BOOK-05: modifies booking dates and shows success', async ({ page }) => {
 // BOOK-06 · Add add-on to booking
 test('BOOK-06: adds breakfast add-on and it appears in booking detail', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
+  // AddonSelector only renders for confirmed/pending bookings
+  await firstUpcomingCard(page, 'Confirmed').click();
 
   await expect(page.getByTestId('addon-selector')).toBeVisible();
   const addBtn = page.getByTestId('add-addon-breakfast');
-  // Only click if not already added
-  if (await addBtn.isVisible({ timeout: 120_000 }).catch(() => false)) {
+  // If breakfast is already added the remove button is shown instead — skip add
+  const alreadyAdded = await page
+    .getByTestId('remove-addon-breakfast')
+    .waitFor({ state: 'visible', timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!alreadyAdded) {
     await addBtn.click();
     await expect(page.getByTestId('remove-addon-breakfast')).toBeVisible();
   }
@@ -118,8 +141,8 @@ test('BOOK-06: adds breakfast add-on and it appears in booking detail', async ({
 // BOOK-07 · Online check-in flow
 test('BOOK-07: completes online check-in and shows completion state', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
+  // OnlineCheckinDialog only renders for confirmed bookings
+  await firstUpcomingCard(page, 'Confirmed').click();
 
   const checkinBtn = page.getByTestId('online-checkin-button');
   await expect(checkinBtn).toBeVisible();
@@ -143,14 +166,11 @@ test('BOOK-07: completes online check-in and shows completion state', async ({ p
 // BOOK-08 · Service request during active booking  [P2]
 test('BOOK-08: submits a service request and it appears in the booking', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-upcoming').click();
 
-  // Find a card whose status badge reads "Checked In" — only those show the service-request-button
-  const checkedInCard = page.locator('[data-testid^="booking-card-"]').filter({
-    has: page.locator('[data-testid^="booking-status-"]', { hasText: 'Checked In' }),
-  });
-  await checkedInCard.first().waitFor({ state: 'visible' });
-  await checkedInCard.first().click();
+  // ServiceRequestDialog only renders for checked_in bookings
+  const checkedInCard = firstUpcomingCard(page, 'Checked In');
+  await checkedInCard.waitFor({ state: 'visible' });
+  await checkedInCard.click();
   await page.waitForLoadState('networkidle');
 
   await page.getByTestId('service-request-button').click();

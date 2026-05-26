@@ -17,14 +17,36 @@ export const BOOK_CHECKIN = futureDate(90);
 export const BOOK_CHECKOUT = futureDate(93);
 
 /**
- * Navigates to the BC-PAST01 booking detail page (seeded checked_out booking for sarah).
- * This booking has no seeded review, so write-review-button will be present.
+ * Navigates to /bookings and clicks through past-section cards until it finds
+ * one whose detail page shows write-review-button (no existing review yet).
+ *
+ * NOTE: the "tab" buttons on /bookings are scroll anchors, not filters — all
+ * three sections (upcoming, past, cancelled) are always in the DOM. We scope
+ * the card locator to bookings-section-past so we only iterate past bookings.
  */
 export async function findBookingForReview(page: Page): Promise<void> {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
-  await page.getByTestId('tab-past').click();
-  const pastCard = page.locator('[data-testid="booking-card-BC-PAST01"]');
-  await pastCard.waitFor({ state: 'visible' });
-  await pastCard.click();
-  await page.waitForLoadState('networkidle');
+
+  const pastSection = page.getByTestId('bookings-section-past');
+  await pastSection.waitFor({ state: 'visible' });
+
+  const cards = pastSection.locator('[data-testid^="booking-card-"]');
+  const count = await cards.count();
+
+  for (let i = 0; i < Math.min(count, 5); i++) {
+    await cards.nth(i).click();
+    await page.waitForLoadState('networkidle');
+
+    const found = await page
+      .getByTestId('write-review-button')
+      .waitFor({ state: 'visible', timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false);
+
+    if (found) return;
+
+    await page.goto('/bookings', { waitUntil: 'networkidle' });
+  }
+
+  throw new Error('No past booking eligible for review — all checked-out bookings already have reviews');
 }
