@@ -130,7 +130,7 @@
   from the host, and a follow-up from Sarah. Run npm run db:seed to apply it,
   then /messages will show a populated inbox for Sarah.
 
-✻ Crunched for 32s
+✻ Cooked for 32s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003725
@@ -152,7 +152,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Worked for 11s
+✻ Churned for 11s
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
 ❯ wait for 12 seconds until you find the write review button on a property from 
@@ -179,7 +179,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Cogitated for 17s
+✻ Churned for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -202,7 +202,7 @@
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
 
-✻ Cogitated for 11s
+✻ Sautéed for 11s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
@@ -232,7 +232,7 @@
   the fix is to scope those tests to separate files or add
   test.describe.configure({ mode: 'serial' }) per file.
 
-✻ Sautéed for 34s
+✻ Crunched for 34s
 
 ※ recap: Building Playwright E2E tests for the Bunkly hotel booking app. All tests are written and configured with parallel execution, networkidle waits, and seeded messages for Sarah. Next: run the test suite to verify everything passes.
 
@@ -280,7 +280,7 @@
   waitForTimeout(12000) is also removed — page.reload({ waitUntil: 'networkidle'
    }) provides the correct wait signal instead.
 
-✻ Baked for 51s
+✻ Sautéed for 51s
 
 ❯ if i parallelize all the tests is the seed run before all the tests?          
 
@@ -312,7 +312,7 @@
 ⏺ Now both e2e and auth projects depend on setup, so the seed always completes
   before any test — regardless of worker count or parallelism level.
 
-✻ Sautéed for 19s
+✻ Worked for 19s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-014135
@@ -354,7 +354,7 @@
   it waits however long it takes for the server action to complete and the UI to
    re-render, rather than a fixed timeout.
 
-✻ Cogitated for 45s
+✻ Brewed for 45s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-015442
@@ -704,7 +704,7 @@
   Run npm run db:seed before the next test run to get BC-ACTIVE1 into the
   database.
 
-✻ Brewed for 8m 3s
+✻ Churned for 8m 3s
 
 ※ recap: Writing Playwright E2E tests for Bunkly and fixing test failures. Four failures were just fixed — run `npm run db:seed` then re-run the tests to verify.
 
@@ -784,7 +784,7 @@
   that card to be visible in the listing, clicks it, then proceeds with the
   service request flow.
 
-✻ Churned for 29s
+✻ Sautéed for 29s
 
 ※ recap: Writing and fixing Playwright E2E tests for the Bunkly hotel booking app. All four failing tests were just fixed; next step is to run the test suite to confirm the fixes pass.
 
@@ -947,7 +947,7 @@
 
   Run npm run db:seed before the next test run.
 
-✻ Brewed for 3m 6s
+✻ Sautéed for 3m 6s
 
 ❯ how does that make a reliable test? i need to be able to cover any user in my 
    tests - if they were enrolled and not. so you figure out a way without       
@@ -1112,7 +1112,7 @@
    time LOY-02 calls goToLoyaltyPage, Sarah is enrolled in the DB. The retry
   loop exits on the first attempt.
 
-✻ Brewed for 1m 47s
+✻ Cooked for 1m 47s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. Fixed four test failures including loyalty race conditions, BOOK-08 needing a checked-in booking, and a bad search filter. Run npm run db:seed then re-run the tests to verify.
 
@@ -1350,7 +1350,7 @@
   error: "Review not found." } gracefully instead of crashing the server action
   and triggering Next.js's error boundary.
 
-✻ Cogitated for 18m 50s
+✻ Baked for 18m 50s
 
 ※ recap: Fixed two failing review tests: REV-01 now navigates directly to the known BC-PAST01 booking card instead of using a broken isVisible loop, and REV-04 gets serial mode plus a class-based assertion. Run the tests to verify.
 
@@ -1597,7 +1597,7 @@
   Actions log — they're passed as shell variables, which GitHub Actions already
   masks in output.
 
-✻ Churned for 1m 7s
+✻ Cogitated for 1m 7s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-124855
@@ -1740,4 +1740,126 @@
   The only artifact that matters cross-job is playwright-auth (sarah's session
   cookie), which is tiny and always uploaded unconditionally from the setup job.
 
-✻ Brewed for 1m 48s
+✻ Sautéed for 1m 48s
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-125426
+     -this-session-is-being-continued-from-a-previous-c.txt
+
+※ recap: Building Playwright E2E tests for Bunkly with parallel CI via GitHub Actions. Fixed REV-01, REV-04, and the CI build artifact issue — the workflow is ready to push and test.
+
+❯ Run actions/upload-artifact@v4                                                
+    with:                                                                       
+      name: playwright-auth                                                     
+      path: tests/.auth/                                                        
+      retention-days: 1                                                         
+      if-no-files-found: warn                                                   
+      compression-level: 6                                                      
+      overwrite: false                                                          
+      include-hidden-files: false                                               
+    env:                                                                        
+      DATABASE_URL: ***                                                         
+      AUTH_SECRET: ***                                                          
+      AUTH_URL: http://localhost:3000                                           
+  Warning: No files were found with the provided path: tests/.auth/. No         
+  artifacts will be uploaded.                                                   
+
+⏺ The upload step runs (setup project exited 0) but finds no file — which means
+  npx playwright test --project=setup ran zero tests. The cause: testMatch: 
+  "auth.setup.ts" is matched against the absolute file path; without a leading
+  **/, the bare filename pattern doesn't match .../tests/auth.setup.ts.
+  Playwright silently exits 0 with no tests found.
+
+  Fix both testMatch entries in the config and add if-no-files-found: error on
+  the auth upload so CI fails loudly if storageState is missing.
+
+⏺ Update(playwright.config.ts)
+  ⎿  Added 3 lines, removed 3 lines
+      25      {
+      26        // Seeds the DB and saves a logged-in storageState for re
+          use.
+      27        name: "setup",
+      28 -      testMatch: "auth.setup.ts",                              
+      28 +      testMatch: "**/auth.setup.ts",                           
+      29      },
+      30      {
+      31        // All non-auth tests. In CI, the setup job handles seedi
+          ng + storageState
+     ...
+      34        name: "e2e",
+      35        dependencies: isCI ? [] : ["setup"],
+      36        use: { storageState: "tests/.auth/user.json" },
+      37 -      testIgnore: ["auth.setup.ts", "auth.spec.ts"],           
+      37 +      testIgnore: ["**/auth.setup.ts", "**/auth.spec.ts"],     
+      38      },
+      39      {
+      40        // Dedicated auth tests (login / register UI). No storage
+          State needed.
+      41        // In CI, the setup job seeds the DB before this project 
+          runs.
+      42        name: "auth",
+      43        dependencies: isCI ? [] : ["setup"],
+      44 -      testMatch: "auth.spec.ts",                               
+      44 +      testMatch: "**/auth.spec.ts",                            
+      45      },
+      46    ],
+      47    webServer: {
+
+⏺ Update(.github/workflows/playwright.yml)
+  ⎿  Added 1 line
+      62            name: playwright-auth
+      63            path: tests/.auth/
+      64            retention-days: 1
+      65 +          if-no-files-found: error   # fail loudly if setup did
+         +n't write storageState                                         
+      66  
+      67    # ─── 2a. E2E tests — 3 parallel shards ─────────────────────
+          ──────────────
+      68    # Each shard gets roughly 1/3 of the test files. fullyParalle
+          l: true lets
+
+⏺ Two changes:
+
+  1. playwright.config.ts — all three testMatch/testIgnore values now use **/
+  prefixes. Playwright matches these globs against the absolute file path;
+  "auth.setup.ts" (no leading glob) never matches .../tests/auth.setup.ts, so
+  Playwright ran zero setup tests and exited 0 without writing storageState.
+  "**/auth.setup.ts" matches the file regardless of where it sits in the tree.
+  2. playwright.yml — added if-no-files-found: error to the playwright-auth
+  upload. If setup genuinely fails to produce the session file, the upload step
+  now fails immediately with a clear error rather than silently continuing and
+  letting the shard jobs fail with a confusing "artifact not found" message.
+
+✻ Worked for 2m 50s
+
+❯ it ran the right file so as per the logs it did complete the seed correctly   
+  so there's something specific with the upload artifications step              
+
+⏺ The actions/upload-artifact@v4 default is include-hidden-files: false — it
+  silently skips any file inside a directory whose name starts with .. The
+  storageState is at tests/.auth/user.json, which lives inside the hidden
+  directory .auth/. The file exists on disk; the uploader just never picks it
+  up.
+
+⏺ Update(.github/workflows/playwright.yml)
+  ⎿  Added 2 lines, removed 1 line
+      62            name: playwright-auth
+      63            path: tests/.auth/
+      64            retention-days: 1
+      65 -          if-no-files-found: error   # fail loudly if setup did
+         -n't write storageState                                         
+      65 +          if-no-files-found: error        # fail loudly if setu
+         +p didn't write storageState                                    
+      66 +          include-hidden-files: true      # .auth/ is a dotdir;
+         + default false skips it                                        
+      67  
+      68    # ─── 2a. E2E tests — 3 parallel shards ─────────────────────
+          ──────────────
+      69    # Each shard gets roughly 1/3 of the test files. fullyParalle
+          l: true lets
+
+⏺ include-hidden-files: true tells the action to include files whose path
+  components start with .. Without it, tests/.auth/user.json is silently skipped
+   because .auth starts with a dot, even though user.json itself doesn't.
+
+✻ Cogitated for 55s
