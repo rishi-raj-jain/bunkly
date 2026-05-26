@@ -1,0 +1,176 @@
+name: Playwright E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Shared env for every job — set these as GitHub repository secrets.
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+  AUTH_URL: http://localhost:3000
+
+jobs:
+  # ─── 1. Build · Seed · Save storageState ─────────────────────────────────
+  # Runs once. Produces two artifacts consumed by every subsequent job:
+  #   • nextjs-build  — the .next production build
+  #   • playwright-auth — tests/.auth/user.json (sarah's session)
+  setup:
+    name: Build + seed + auth state
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Restore incremental Next.js build cache across runs.
+      - uses: actions/cache@v4
+        with:
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'next.config.ts') }}
+          restore-keys: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - run: npm run build
+
+      # Upload the full .next build so shards skip rebuilding.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+          retention-days: 1
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install --with-deps chromium
+
+      # Seeds the DB and writes tests/.auth/user.json (sarah's storageState).
+      - name: Seed DB and save auth state
+        run: npx playwright test --project=setup
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-auth
+          path: tests/.auth/
+          retention-days: 1
+
+  # ─── 2a. E2E tests — 3 parallel shards ───────────────────────────────────
+  # Each shard gets roughly 1/3 of the test files. fullyParallel: true lets
+  # each shard use all available CPUs (4 on ubuntu-latest).
+  e2e:
+    name: E2E shard ${{ matrix.shard }}/3
+    runs-on: ubuntu-latest
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Download the build produced by the setup job — no rebuild needed.
+      - uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install --with-deps chromium
+
+      # Restore sarah's session so tests start pre-authenticated.
+      - uses: actions/download-artifact@v4
+        with:
+          name: playwright-auth
+          path: tests/.auth/
+
+      - name: Run E2E tests (shard ${{ matrix.shard }}/3)
+        run: npx playwright test --project=e2e --shard=${{ matrix.shard }}/3
+
+      # Blob reporter writes here; the report job merges all shards.
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-e2e-${{ matrix.shard }}
+          path: blob-report/
+          retention-days: 1
+
+  # ─── 2b. Auth tests (login / register flows) ─────────────────────────────
+  # These tests exercise the unauthenticated login/register UI and create
+  # throwaway users, so they run independently alongside the e2e shards.
+  auth:
+    name: Auth tests
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+
+      - name: Install Playwright browsers (Chromium only)
+        run: npx playwright install --with-deps chromium
+
+      - name: Run auth tests
+        run: npx playwright test --project=auth
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-auth
+          path: blob-report/
+          retention-days: 1
+
+  # ─── 3. Merge all shard reports into one HTML report ─────────────────────
+  report:
+    name: Merge reports
+    runs-on: ubuntu-latest
+    needs: [e2e, auth]
+    if: ${{ !cancelled() }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Download every blob-report-* artifact into a flat directory.
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: blob-report-*
+          merge-multiple: true
+          path: all-blobs/
+
+      - name: Merge blob reports into HTML
+        run: npx playwright merge-reports --reporter html ./all-blobs
+
+      # The merged report is kept for 14 days — long enough for async PR review.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

@@ -1,6 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 const headed = !!process.env.HEADED;
+const isCI = !!process.env.CI;
 
 export default defineConfig({
   testDir: "./tests",
@@ -8,7 +9,11 @@ export default defineConfig({
   retries: 0,
   timeout: 120_000,
   expect: { timeout: 120_000 },
-  reporter: [["html", { open: "never" }]],
+  // In CI: blob reporter lets the report job merge shards into one HTML report.
+  // Locally: plain HTML report opens automatically on failure.
+  reporter: isCI
+    ? [["blob"], ["line"]]
+    : [["html", { open: "never" }]],
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
@@ -23,24 +28,27 @@ export default defineConfig({
       testMatch: "auth.setup.ts",
     },
     {
-      // All non-auth tests. Depends on setup so storageState exists before running.
+      // All non-auth tests. In CI, the setup job handles seeding + storageState
+      // before this project runs, so no project dependency is needed there.
+      // Locally, the dependency ensures setup always runs first.
       name: "e2e",
-      dependencies: ["setup"],
+      dependencies: isCI ? [] : ["setup"],
       use: { storageState: "tests/.auth/user.json" },
       testIgnore: ["auth.setup.ts", "auth.spec.ts"],
     },
     {
-      // Dedicated auth test. No storageState — exercises real login UI.
-      // Depends on setup so the seed runs before auth tests start.
+      // Dedicated auth tests (login / register UI). No storageState needed.
+      // In CI, the setup job seeds the DB before this project runs.
       name: "auth",
-      dependencies: ["setup"],
+      dependencies: isCI ? [] : ["setup"],
       testMatch: "auth.spec.ts",
     },
   ],
   webServer: {
     command: "npm run start",
     url: "http://localhost:3000",
-    reuseExistingServer: true,
+    // Reuse an already-running dev server locally; always start fresh in CI.
+    reuseExistingServer: !isCI,
     timeout: 120_000,
   },
 });

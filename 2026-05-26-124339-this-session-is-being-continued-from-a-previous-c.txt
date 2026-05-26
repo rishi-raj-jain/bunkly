@@ -27,7 +27,7 @@
   actively polls the DOM until the element appears rather than doing a one-shot
   assertion check.
 
-✻ Worked for 1m 56s
+✻ Baked for 1m 56s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003459
@@ -130,7 +130,7 @@
   from the host, and a follow-up from Sarah. Run npm run db:seed to apply it,
   then /messages will show a populated inbox for Sarah.
 
-✻ Crunched for 32s
+✻ Brewed for 32s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003725
@@ -152,7 +152,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Cogitated for 11s
+✻ Sautéed for 11s
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
 ❯ wait for 12 seconds until you find the write review button on a property from 
@@ -179,7 +179,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Crunched for 17s
+✻ Baked for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -202,7 +202,7 @@
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
 
-✻ Churned for 11s
+✻ Crunched for 11s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
@@ -232,7 +232,7 @@
   the fix is to scope those tests to separate files or add
   test.describe.configure({ mode: 'serial' }) per file.
 
-✻ Cogitated for 34s
+✻ Baked for 34s
 
 ※ recap: Building Playwright E2E tests for the Bunkly hotel booking app. All tests are written and configured with parallel execution, networkidle waits, and seeded messages for Sarah. Next: run the test suite to verify everything passes.
 
@@ -354,7 +354,7 @@
   it waits however long it takes for the server action to complete and the UI to
    re-render, rather than a fixed timeout.
 
-✻ Cogitated for 45s
+✻ Churned for 45s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-015442
@@ -704,7 +704,7 @@
   Run npm run db:seed before the next test run to get BC-ACTIVE1 into the
   database.
 
-✻ Sautéed for 8m 3s
+✻ Cooked for 8m 3s
 
 ※ recap: Writing Playwright E2E tests for Bunkly and fixing test failures. Four failures were just fixed — run `npm run db:seed` then re-run the tests to verify.
 
@@ -784,7 +784,7 @@
   that card to be visible in the listing, clicks it, then proceeds with the
   service request flow.
 
-✻ Brewed for 29s
+✻ Churned for 29s
 
 ※ recap: Writing and fixing Playwright E2E tests for the Bunkly hotel booking app. All four failing tests were just fixed; next step is to run the test suite to confirm the fixes pass.
 
@@ -947,7 +947,7 @@
 
   Run npm run db:seed before the next test run.
 
-✻ Sautéed for 3m 6s
+✻ Brewed for 3m 6s
 
 ❯ how does that make a reliable test? i need to be able to cover any user in my 
    tests - if they were enrolled and not. so you figure out a way without       
@@ -1112,7 +1112,7 @@
    time LOY-02 calls goToLoyaltyPage, Sarah is enrolled in the DB. The retry
   loop exits on the first attempt.
 
-✻ Sautéed for 1m 47s
+✻ Cogitated for 1m 47s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. Fixed four test failures including loyalty race conditions, BOOK-08 needing a checked-in booking, and a bad search filter. Run npm run db:seed then re-run the tests to verify.
 
@@ -1350,6 +1350,178 @@
   error: "Review not found." } gracefully instead of crashing the server action
   and triggering Next.js's error boundary.
 
-✻ Crunched for 18m 50s
+✻ Churned for 18m 50s
 
 ※ recap: Fixed two failing review tests: REV-01 now navigates directly to the known BC-PAST01 booking card instead of using a broken isVisible loop, and REV-04 gets serial mode plus a class-based assertion. Run the tests to verify.
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-123040
+     -this-session-is-being-continued-from-a-previous-c.txt
+
+※ recap: Fixed two failing Playwright tests: REV-01 now navigates directly to the known BC-PAST01 booking card instead of using a broken isVisible loop, and REV-04 runs serially with REV-03 to prevent race conditions. Ready to run the test suite to verify.
+
+❯ attempt to run these tests in parallel. This means setting up parallel or     
+  sharded runners in GitHub Actions                                             
+
+⏺ Let me look at the existing CI setup and Playwright config first.
+  Searched for 2 patterns, read 4 files, listed 2 directories (ctrl+o to expand)
+
+⏺ Now I have everything I need. The key challenges for sharding with this
+  codebase:
+
+  1. auth.setup.ts seeds the DB (destructive TRUNCATE). If all 3 shards ran it,
+  they'd race-truncate each other's data.
+  2. Each shard needs the tests/.auth/user.json storageState.
+  3. Build artifacts should be shared, not rebuilt per shard.
+
+  The fix: strip project dependencies in CI (process.env.CI), run setup exactly
+  once in a dedicated job, then fan out shards. Let me create both files.
+
+  Ran 1 shell command (ctrl+o to expand)
+
+⏺ Write(.github/workflows/playwright.yml)
+  ⎿  Wrote 176 lines to .github/workflows/playwright.yml
+       1 name: Playwright E2E
+       2 
+       3 on:
+       4   push:
+       5     branches: [main]
+       7     branches: [main]
+       8   workflow_dispatch:
+       9 
+      10 # Shared env for every job — set these as GitHub repository secr
+         ets.
+     … +182 lines (ctrl+o to expand)
+
+⏺ Now update playwright.config.ts — remove project dependencies in CI (prevents
+  each shard from re-seeding), switch to blob reporter for merging, and never
+  reuse an existing server in CI:
+
+⏺ Update(playwright.config.ts)
+  ⎿  Added 15 lines, removed 7 lines
+      1  import { defineConfig } from "@playwright/test";
+      2  
+      3  const headed = !!process.env.HEADED;
+      4 +const isCI = !!process.env.CI;                                  
+      5  
+      6  export default defineConfig({
+      7    testDir: "./tests",
+     ...
+       9    retries: 0,
+      10    timeout: 120_000,
+      11    expect: { timeout: 120_000 },
+      11 -  reporter: [["html", { open: "never" }]],                     
+      12 +  // In CI: blob reporter lets the report job merge shards into
+         + one HTML report.                                              
+      13 +  // Locally: plain HTML report opens automatically on failure.
+      14 +  reporter: isCI                                               
+      15 +    ? [["blob"], ["line"]]                                     
+      16 +    : [["html", { open: "never" }]],                           
+      17    use: {
+      18      baseURL: "http://localhost:3000",
+      19      trace: "on-first-retry",
+     ...
+      28        testMatch: "auth.setup.ts",
+      29      },
+      30      {
+      26 -      // All non-auth tests. Depends on setup so storageState e
+         -xists before running.                                          
+      31 +      // All non-auth tests. In CI, the setup job handles seedi
+         +ng + storageState                                              
+      32 +      // before this project runs, so no project dependency is 
+         +needed there.                                                  
+      33 +      // Locally, the dependency ensures setup always runs firs
+         +t.                                                             
+      34        name: "e2e",
+      28 -      dependencies: ["setup"],                                 
+      35 +      dependencies: isCI ? [] : ["setup"],                     
+      36        use: { storageState: "tests/.auth/user.json" },
+      37        testIgnore: ["auth.setup.ts", "auth.spec.ts"],
+      38      },
+      39      {
+      33 -      // Dedicated auth test. No storageState — exercises real 
+         -login UI.                                                      
+      34 -      // Depends on setup so the seed runs before auth tests st
+         -art.                                                           
+      40 +      // Dedicated auth tests (login / register UI). No storage
+         +State needed.                                                  
+      41 +      // In CI, the setup job seeds the DB before this project 
+         +runs.                                                          
+      42        name: "auth",
+      36 -      dependencies: ["setup"],                                 
+      43 +      dependencies: isCI ? [] : ["setup"],                     
+      44        testMatch: "auth.spec.ts",
+      45      },
+      46    ],
+      47    webServer: {
+      48      command: "npm run start",
+      49      url: "http://localhost:3000",
+      43 -    reuseExistingServer: true,                                 
+      50 +    // Reuse an already-running dev server locally; always star
+         +t fresh in CI.                                                 
+      51 +    reuseExistingServer: !isCI,                                
+      52      timeout: 120_000,
+      53    },
+      54  });
+
+⏺ Let me verify both files look right:
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Good. Now let me also check what npm run start resolves to — it needs to serve
+   the production build, which requires .next/ to exist. Each job downloads the
+  .next artifact from setup before starting Playwright (which starts the server
+  via webServer):
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+⏺ Good — next start serves the .next/ build that's downloaded from the artifact.
+   Everything chains correctly.
+
+  Here's what was set up and why each decision was made:
+
+  ---
+  What was created
+
+  .github/workflows/playwright.yml — 4-job pipeline:
+
+  ┌────────┬──────────────────────────────┬─────────────────────────────────┐
+  │  Job   │         What it does         │               Why               │
+  ├────────┼──────────────────────────────┼─────────────────────────────────┤
+  │        │                              │ Seed must run exactly once; if  │
+  │ setup  │ Builds app → seeds DB →      │ each shard ran it, they'd       │
+  │        │ saves tests/.auth/user.json  │ TRUNCATE each other's data      │
+  │        │                              │ mid-test                        │
+  ├────────┼──────────────────────────────┼─────────────────────────────────┤
+  │ e2e    │ Downloads build + auth       │ Splits the 10 e2e spec files    │
+  │ (3×)   │ artifact → runs --shard=K/3  │ across 3 parallel runners; each │
+  │        │                              │  gets ~3-4 files                │
+  ├────────┼──────────────────────────────┼─────────────────────────────────┤
+  │        │ Downloads build → runs auth  │ Auth tests create throwaway     │
+  │ auth   │ tests alongside shards       │ users — no storageState needed, │
+  │        │                              │  no DB interference with sarah  │
+  ├────────┼──────────────────────────────┼─────────────────────────────────┤
+  │        │ Merges all blob reports into │ Playwright's merge-reports      │
+  │ report │  one HTML report             │ stitches shard results into a   │
+  │        │                              │ single artifact                 │
+  └────────┴──────────────────────────────┴─────────────────────────────────┘
+
+  playwright.config.ts — three CI-aware changes:
+
+  1. dependencies: isCI ? [] : ["setup"] — locally, Playwright auto-runs setup
+  before e2e; in CI, the job ordering enforces this instead (prevents each shard
+   from re-seeding)
+  2. reporter: isCI ? [["blob"], ...] : [["html", ...]] — blob reporter is
+  needed for merge-reports to work across shards
+  3. reuseExistingServer: !isCI — always starts a fresh next start in CI rather
+  than looking for a running server
+
+  Required GitHub Secrets
+
+  Add these under Settings → Secrets → Actions:
+  - DATABASE_URL — your Neon connection string
+  - AUTH_SECRET — the AUTH_SECRET from your .env
+
+✻ Sautéed for 6m 4s
+
+※ recap: Added GitHub Actions workflow with 3 parallel e2e shards plus an auth job, and fixed two failing review tests. Next: push to GitHub and add the DATABASE_URL and AUTH_SECRET repository secrets to enable CI.
