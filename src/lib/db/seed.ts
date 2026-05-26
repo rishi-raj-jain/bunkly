@@ -1032,6 +1032,35 @@ async function seed() {
   });
   console.log("  Created past booking BC-PAST01 for sarah (checked_out)");
 
+  // Active (checked_in) booking for sarah — required for service-request tests
+  const activeCheckIn = new Date();
+  const activeCheckOut = new Date(activeCheckIn);
+  activeCheckOut.setDate(activeCheckOut.getDate() + 2);
+  const activeNightlyRate = parseFloat(pastRoomType.baseRate);
+  const activeSubtotal = activeNightlyRate * 2;
+  const activeTaxes = activeSubtotal * 0.12;
+
+  await db.insert(schema.bookings).values({
+    confirmationNo: "BC-ACTIVE1",
+    userId: sarah.id,
+    propertyId: pastProperty.id,
+    roomTypeId: pastRoomType.id,
+    status: "checked_in",
+    checkIn: activeCheckIn.toISOString().split("T")[0],
+    checkOut: activeCheckOut.toISOString().split("T")[0],
+    adults: 2,
+    children: 0,
+    guestName: sarah.name!,
+    guestEmail: sarah.email,
+    guestPhone: "+1-555-0101",
+    subtotal: activeSubtotal.toFixed(2),
+    taxes: activeTaxes.toFixed(2),
+    total: (activeSubtotal + activeTaxes).toFixed(2),
+    currency: "USD",
+    cancellationPolicy: pastProperty.cancellationPolicy,
+  });
+  console.log("  Created active booking BC-ACTIVE1 for sarah (checked_in)");
+
   // 4. Create sample reviews
   console.log("Creating sample reviews...");
   const allBookings = await db

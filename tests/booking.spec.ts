@@ -148,9 +148,15 @@ test('BOOK-07: completes online check-in and shows completion state', async ({ p
 test('BOOK-08: submits a service request and it appears in the booking', async ({ page }) => {
   await page.goto('/bookings', { waitUntil: 'networkidle' });
   await page.getByTestId('tab-upcoming').click();
-  await page.locator('[data-testid^="booking-card-"]').first().click();
 
-  // service-request-button is the closed state of the dialog — click it to open
+  // Find a card whose status badge reads "Checked In" — only those show the service-request-button
+  const checkedInCard = page.locator('[data-testid^="booking-card-"]').filter({
+    has: page.locator('[data-testid^="booking-status-"]', { hasText: 'Checked In' }),
+  });
+  await checkedInCard.first().waitFor({ state: 'visible' });
+  await checkedInCard.first().click();
+  await page.waitForLoadState('networkidle');
+
   await page.getByTestId('service-request-button').click();
   await expect(page.getByTestId('service-request-dialog')).toBeVisible();
 

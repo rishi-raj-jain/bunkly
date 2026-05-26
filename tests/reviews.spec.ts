@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { findBookingForReview } from './helpers';
 
+// Serial: REV-01 creates a review for BC-PAST01; REV-03 then deletes it (first in list).
+// Without serial mode REV-03 can delete a Paris seeded review while REV-04 is voting,
+// causing a null dereference crash in the toggleReviewVote server action.
+test.describe.configure({ mode: 'serial' });
+
 // REV-01 · Submit a review  [P1]
 test('REV-01: submits a review from a booking detail page', async ({ page }) => {
   await findBookingForReview(page);
@@ -60,12 +65,11 @@ test('REV-04: helpful vote increments count; clicking again toggles it back', as
     return;
   }
 
-  const initialText = await voteBtn.textContent();
   await voteBtn.click();
-  // Text should change (count increments or "Helpful" badge state changes)
-  await expect(voteBtn).not.toHaveText(initialText!);
+  // After voting, button switches to the voted style (text-accent class)
+  await expect(voteBtn).toHaveClass(/text-accent/);
 
-  // Toggle back
+  // Toggle back — should revert to unvoted style
   await voteBtn.click();
-  await expect(voteBtn).toHaveText(initialText!);
+  await expect(voteBtn).not.toHaveClass(/text-accent/);
 });

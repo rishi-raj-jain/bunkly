@@ -17,29 +17,14 @@ export const BOOK_CHECKIN = futureDate(90);
 export const BOOK_CHECKOUT = futureDate(93);
 
 /**
- * Navigates through /bookings until it finds a booking detail page where
- * write-review-button is present. Returns the URL of that page.
- * Throws if no eligible booking is found among the first 5 cards.
+ * Navigates to the BC-PAST01 booking detail page (seeded checked_out booking for sarah).
+ * This booking has no seeded review, so write-review-button will be present.
  */
 export async function findBookingForReview(page: Page): Promise<void> {
-  const cards = page.locator('[data-testid^="booking-card-"]');
-
-  const goToPastTab = async () => {
-    await page.goto('/bookings', { waitUntil: 'networkidle' });
-    await page.getByTestId('tab-past').click();
-    // Wait for tab content to render before counting or clicking
-    await cards.first().waitFor({ state: 'visible' });
-  };
-
-  await goToPastTab();
-  const count = await cards.count();
-
-  for (let i = 0; i < Math.min(count, 5); i++) {
-    await cards.nth(i).click();
-    await page.waitForLoadState('networkidle');
-    const btn = page.getByTestId('write-review-button');
-    if (await btn.isVisible({ timeout: 120_000 }).catch(() => false)) return;
-    await goToPastTab();
-  }
-  throw new Error('No eligible booking found for review — needs a checked_out or past booking');
+  await page.goto('/bookings', { waitUntil: 'networkidle' });
+  await page.getByTestId('tab-past').click();
+  const pastCard = page.locator('[data-testid="booking-card-BC-PAST01"]');
+  await pastCard.waitFor({ state: 'visible' });
+  await pastCard.click();
+  await page.waitForLoadState('networkidle');
 }

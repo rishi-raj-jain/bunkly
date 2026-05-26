@@ -22,7 +22,8 @@ test('SEARCH-02: fictional city shows no-results message', async ({ page }) => {
 
 // SEARCH-03 · Filter and sort search results  [P0]
 test('SEARCH-03: hotel type filter updates URL param', async ({ page }) => {
-  await page.goto(searchUrl('Paris'), { waitUntil: 'networkidle' });
+  // Use New York — it has "The Grand Bunkly NYC" (hotel type). Paris only has boutique.
+  await page.goto(searchUrl('New York'), { waitUntil: 'networkidle' });
   await expect(page.getByTestId('filter-panel')).toBeVisible();
 
   await page.getByTestId('filter-type-hotel').click();

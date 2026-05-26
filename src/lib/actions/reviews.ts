@@ -130,11 +130,19 @@ export async function toggleReviewVote(reviewId: string) {
     .where(and(eq(reviewVotes.reviewId, reviewId), eq(reviewVotes.userId, session.user.id)))
     .limit(1);
 
+  const [review] = await db
+    .select({ helpfulCount: reviews.helpfulCount })
+    .from(reviews)
+    .where(eq(reviews.id, reviewId))
+    .limit(1);
+
+  if (!review) return { error: "Review not found." };
+
   if (existing) {
     await db.delete(reviewVotes).where(eq(reviewVotes.id, existing.id));
     await db
       .update(reviews)
-      .set({ helpfulCount: Math.max(0, (await db.select({ c: reviews.helpfulCount }).from(reviews).where(eq(reviews.id, reviewId)).limit(1))[0].c! - 1) })
+      .set({ helpfulCount: Math.max(0, (review.helpfulCount ?? 0) - 1) })
       .where(eq(reviews.id, reviewId));
     return { voted: false };
   } else {
@@ -145,7 +153,7 @@ export async function toggleReviewVote(reviewId: string) {
     });
     await db
       .update(reviews)
-      .set({ helpfulCount: (await db.select({ c: reviews.helpfulCount }).from(reviews).where(eq(reviews.id, reviewId)).limit(1))[0].c! + 1 })
+      .set({ helpfulCount: (review.helpfulCount ?? 0) + 1 })
       .where(eq(reviews.id, reviewId));
     return { voted: true };
   }
