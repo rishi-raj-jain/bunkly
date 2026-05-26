@@ -130,7 +130,7 @@
   from the host, and a follow-up from Sarah. Run npm run db:seed to apply it,
   then /messages will show a populated inbox for Sarah.
 
-✻ Cooked for 32s
+✻ Sautéed for 32s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003725
@@ -152,7 +152,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Churned for 11s
+✻ Sautéed for 11s
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
 ❯ wait for 12 seconds until you find the write review button on a property from 
@@ -179,7 +179,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Churned for 17s
+✻ Worked for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -202,7 +202,7 @@
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
 
-✻ Sautéed for 11s
+✻ Crunched for 11s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
@@ -232,7 +232,7 @@
   the fix is to scope those tests to separate files or add
   test.describe.configure({ mode: 'serial' }) per file.
 
-✻ Crunched for 34s
+✻ Cogitated for 34s
 
 ※ recap: Building Playwright E2E tests for the Bunkly hotel booking app. All tests are written and configured with parallel execution, networkidle waits, and seeded messages for Sarah. Next: run the test suite to verify everything passes.
 
@@ -280,7 +280,7 @@
   waitForTimeout(12000) is also removed — page.reload({ waitUntil: 'networkidle'
    }) provides the correct wait signal instead.
 
-✻ Sautéed for 51s
+✻ Brewed for 51s
 
 ❯ if i parallelize all the tests is the seed run before all the tests?          
 
@@ -354,7 +354,7 @@
   it waits however long it takes for the server action to complete and the UI to
    re-render, rather than a fixed timeout.
 
-✻ Brewed for 45s
+✻ Churned for 45s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-015442
@@ -704,7 +704,7 @@
   Run npm run db:seed before the next test run to get BC-ACTIVE1 into the
   database.
 
-✻ Churned for 8m 3s
+✻ Brewed for 8m 3s
 
 ※ recap: Writing Playwright E2E tests for Bunkly and fixing test failures. Four failures were just fixed — run `npm run db:seed` then re-run the tests to verify.
 
@@ -784,7 +784,7 @@
   that card to be visible in the listing, clicks it, then proceeds with the
   service request flow.
 
-✻ Sautéed for 29s
+✻ Crunched for 29s
 
 ※ recap: Writing and fixing Playwright E2E tests for the Bunkly hotel booking app. All four failing tests were just fixed; next step is to run the test suite to confirm the fixes pass.
 
@@ -947,7 +947,7 @@
 
   Run npm run db:seed before the next test run.
 
-✻ Sautéed for 3m 6s
+✻ Worked for 3m 6s
 
 ❯ how does that make a reliable test? i need to be able to cover any user in my 
    tests - if they were enrolled and not. so you figure out a way without       
@@ -1112,7 +1112,7 @@
    time LOY-02 calls goToLoyaltyPage, Sarah is enrolled in the DB. The retry
   loop exits on the first attempt.
 
-✻ Cooked for 1m 47s
+✻ Sautéed for 1m 47s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. Fixed four test failures including loyalty race conditions, BOOK-08 needing a checked-in booking, and a bad search filter. Run npm run db:seed then re-run the tests to verify.
 
@@ -1350,7 +1350,7 @@
   error: "Review not found." } gracefully instead of crashing the server action
   and triggering Next.js's error boundary.
 
-✻ Baked for 18m 50s
+✻ Cooked for 18m 50s
 
 ※ recap: Fixed two failing review tests: REV-01 now navigates directly to the known BC-PAST01 booking card instead of using a broken isVisible loop, and REV-04 gets serial mode plus a class-based assertion. Run the tests to verify.
 
@@ -1522,7 +1522,7 @@
   - DATABASE_URL — your Neon connection string
   - AUTH_SECRET — the AUTH_SECRET from your .env
 
-✻ Baked for 6m 4s
+✻ Cooked for 6m 4s
 
 ※ recap: Added GitHub Actions workflow with 3 parallel e2e shards plus an auth job, and fixed two failing review tests. Next: push to GitHub and add the DATABASE_URL and AUTH_SECRET repository secrets to enable CI.
 
@@ -1597,7 +1597,7 @@
   Actions log — they're passed as shell variables, which GitHub Actions already
   masks in output.
 
-✻ Cogitated for 1m 7s
+✻ Cooked for 1m 7s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-124855
@@ -1740,7 +1740,7 @@
   The only artifact that matters cross-job is playwright-auth (sarah's session
   cookie), which is tiny and always uploaded unconditionally from the setup job.
 
-✻ Sautéed for 1m 48s
+✻ Worked for 1m 48s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-125426
@@ -1830,7 +1830,7 @@
   now fails immediately with a clear error rather than silently continuing and
   letting the shard jobs fail with a confusing "artifact not found" message.
 
-✻ Worked for 2m 50s
+✻ Sautéed for 2m 50s
 
 ❯ it ran the right file so as per the logs it did complete the seed correctly   
   so there's something specific with the upload artifications step              
@@ -1863,3 +1863,74 @@
    because .auth starts with a dot, even though user.json itself doesn't.
 
 ✻ Cogitated for 55s
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-131033
+     -this-session-is-being-continued-from-a-previous-c.txt
+
+※ recap: Building Playwright E2E tests with GitHub Actions CI. The CI workflow is iterating on the setup job — the next run should confirm whether `include-hidden-files: true` fixes the missing storageState artifact.
+
+❯ add instructions in readme.md to access the artifact                          
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ Update(README.md)
+  ⎿  Added 32 lines
+       84  npx playwright test --ui
+       85  ```
+       86  
+       87 +## CI — GitHub Actions                                        
+       88 +                                                              
+       89 +The workflow at `.github/workflows/playwright.yml` runs on eve
+          +ry push to `main` and on pull requests. It splits tests across
+          + parallel jobs to keep the total wall-clock time low:         
+       90 +                                                              
+       91 +| Job | What it runs |                                        
+       92 +|-----|-------------|                                         
+       93 +| **Seed + auth state** | Builds the app, seeds the DB, and sa
+          +ves sarah's session |                                         
+       94 +| **E2E shard 1/2/3** | Each shard runs ~⅓ of the `e2e` spec f
+          +iles in parallel |                                            
+       95 +| **Auth tests** | Unauthenticated login/register flows (runs 
+          +alongside shards) |                                           
+       96 +| **Merge reports** | Stitches each shard's results into one H
+          +TML report |                                                  
+       97 +                                                              
+       98 +### Required repository secrets                               
+       99 +                                                              
+      100 +Go to **Settings → Secrets and variables → Actions** and add: 
+      101 +                                                              
+      102 +| Secret | Value |                                            
+      103 +|--------|-------|                                            
+      104 +| `DATABASE_URL` | Your Neon connection string (same as local 
+          +`.env`) |                                                     
+      105 +| `AUTH_SECRET` | A random secret — `openssl rand -base64 32` 
+          +|                                                             
+      106 +                                                              
+      107 +### Downloading the HTML test report                          
+      108 +                                                              
+      109 +After a workflow run completes:                               
+      110 +                                                              
+      111 +1. Open the repository on GitHub and click the **Actions** tab
+          +.                                                             
+      112 +2. Click the workflow run you want to inspect.                
+      113 +3. Scroll to the **Artifacts** section at the bottom of the su
+          +mmary page.                                                   
+      114 +4. Click **playwright-report** to download a `.zip` file.     
+      115 +5. Unzip it and open `index.html` in your browser.            
+      116 +                                                              
+      117 +> The merged report includes results from all shards and is ke
+          +pt for **14 days**.                                           
+      118 +                                                              
+      119  ## Test structure
+      120  
+      121  ```
+
+⏺ Added a CI — GitHub Actions section to the README with: a table of the four
+  jobs and what each does, the two required secrets and where to add them, and a
+   numbered walkthrough for downloading and opening the merged HTML report
+  artifact.
+
+✻ Sautéed for 22s
+
+※ recap: Building Playwright E2E CI for a Next.js hotel booking app. The workflow now seeds once, fans out to 3 parallel shards, and merges reports — push the latest commit and verify the artifact upload succeeds with the hidden-files fix.

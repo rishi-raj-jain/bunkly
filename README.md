@@ -84,6 +84,38 @@ HEADED=1 npx playwright test
 npx playwright test --ui
 ```
 
+## CI — GitHub Actions
+
+The workflow at `.github/workflows/playwright.yml` runs on every push to `main` and on pull requests. It splits tests across parallel jobs to keep the total wall-clock time low:
+
+| Job | What it runs |
+|-----|-------------|
+| **Seed + auth state** | Builds the app, seeds the DB, and saves sarah's session |
+| **E2E shard 1/2/3** | Each shard runs ~⅓ of the `e2e` spec files in parallel |
+| **Auth tests** | Unauthenticated login/register flows (runs alongside shards) |
+| **Merge reports** | Stitches each shard's results into one HTML report |
+
+### Required repository secrets
+
+Go to **Settings → Secrets and variables → Actions** and add:
+
+| Secret | Value |
+|--------|-------|
+| `DATABASE_URL` | Your Neon connection string (same as local `.env`) |
+| `AUTH_SECRET` | A random secret — `openssl rand -base64 32` |
+
+### Downloading the HTML test report
+
+After a workflow run completes:
+
+1. Open the repository on GitHub and click the **Actions** tab.
+2. Click the workflow run you want to inspect.
+3. Scroll to the **Artifacts** section at the bottom of the summary page.
+4. Click **playwright-report** to download a `.zip` file.
+5. Unzip it and open `index.html` in your browser.
+
+> The merged report includes results from all shards and is kept for **14 days**.
+
 ## Test structure
 
 ```
