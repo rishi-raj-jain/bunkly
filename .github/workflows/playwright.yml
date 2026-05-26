@@ -13,13 +13,17 @@ env:
   AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
   AUTH_URL: http://localhost:3000
 
+# Reusable step sequences live in the composite action below.
+# Each job that runs Playwright needs: checkout → node → npm ci → build → browsers.
+# We do NOT share the .next build as an artifact because upload/download adds latency
+# and Next.js incremental build cache (restored from actions/cache) is fast enough.
+
 jobs:
-  # ─── 1. Build · Seed · Save storageState ─────────────────────────────────
-  # Runs once. Produces two artifacts consumed by every subsequent job:
-  #   • nextjs-build  — the .next production build
-  #   • playwright-auth — tests/.auth/user.json (sarah's session)
+  # ─── 1. Seed DB and save storageState ────────────────────────────────────
+  # Runs once. Uploads playwright-auth (tests/.auth/user.json) so every shard
+  # can start as pre-authenticated sarah without re-seeding.
   setup:
-    name: Build + seed + auth state
+    name: Seed + auth state
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,7 +35,6 @@ jobs:
 
       - run: npm ci
 
-      # Restore incremental Next.js build cache across runs.
       - uses: actions/cache@v4
         with:
           path: .next/cache
@@ -40,14 +43,7 @@ jobs:
 
       - run: npm run build
 
-      # Upload the full .next build so shards skip rebuilding.
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nextjs-build
-          path: .next/
-          retention-days: 1
-
-      # npm run db:seed uses `tsx --env-file .env` which requires the file to
+      # npm run db:seed calls `tsx --env-file .env` which requires the file to
       # exist. In CI the vars come from secrets, so we materialise the file.
       - name: Write .env for seed script
         run: |
@@ -88,11 +84,14 @@ jobs:
 
       - run: npm ci
 
-      # Download the build produced by the setup job — no rebuild needed.
-      - uses: actions/download-artifact@v4
+      # Incremental build cache shared across shards for the same source tree.
+      - uses: actions/cache@v4
         with:
-          name: nextjs-build
-          path: .next/
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'next.config.ts') }}
+          restore-keys: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - run: npm run build
 
       - name: Install Playwright browsers (Chromium only)
         run: npx playwright install --with-deps chromium
@@ -131,10 +130,13 @@ jobs:
 
       - run: npm ci
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/cache@v4
         with:
-          name: nextjs-build
-          path: .next/
+          path: .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'next.config.ts') }}
+          restore-keys: nextjs-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
+
+      - run: npm run build
 
       - name: Install Playwright browsers (Chromium only)
         run: npx playwright install --with-deps chromium

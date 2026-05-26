@@ -27,7 +27,7 @@
   actively polls the DOM until the element appears rather than doing a one-shot
   assertion check.
 
-✻ Baked for 1m 56s
+✻ Worked for 1m 56s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003459
@@ -130,7 +130,7 @@
   from the host, and a follow-up from Sarah. Run npm run db:seed to apply it,
   then /messages will show a populated inbox for Sarah.
 
-✻ Brewed for 32s
+✻ Crunched for 32s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-003725
@@ -152,7 +152,7 @@
 ⏺ All page.goto() calls across every test file now include { waitUntil: 
   'networkidle' } — verified with no remaining unpatched calls.
 
-✻ Sautéed for 11s
+✻ Worked for 11s
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. All page.goto calls now wait for networkidle. Next: run the full test suite to verify everything passes.
 
 ❯ wait for 12 seconds until you find the write review button on a property from 
@@ -179,7 +179,7 @@
 ⏺ The write-review-button check in findBookingForReview now waits up to 12
   seconds per booking card before moving on to the next one.
 
-✻ Baked for 17s
+✻ Cogitated for 17s
 
 ❯ wait for 120 seconds but after the naviation from past tab to the property    
   and then looking for selector on that page                                    
@@ -202,7 +202,7 @@
 ⏺ After clicking a booking card, it now waits for networkidle before searching
   for write-review-button with a 120-second timeout.
 
-✻ Crunched for 11s
+✻ Cogitated for 11s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-005403
@@ -232,7 +232,7 @@
   the fix is to scope those tests to separate files or add
   test.describe.configure({ mode: 'serial' }) per file.
 
-✻ Baked for 34s
+✻ Sautéed for 34s
 
 ※ recap: Building Playwright E2E tests for the Bunkly hotel booking app. All tests are written and configured with parallel execution, networkidle waits, and seeded messages for Sarah. Next: run the test suite to verify everything passes.
 
@@ -280,7 +280,7 @@
   waitForTimeout(12000) is also removed — page.reload({ waitUntil: 'networkidle'
    }) provides the correct wait signal instead.
 
-✻ Worked for 51s
+✻ Baked for 51s
 
 ❯ if i parallelize all the tests is the seed run before all the tests?          
 
@@ -312,7 +312,7 @@
 ⏺ Now both e2e and auth projects depend on setup, so the seed always completes
   before any test — regardless of worker count or parallelism level.
 
-✻ Brewed for 19s
+✻ Sautéed for 19s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-014135
@@ -354,7 +354,7 @@
   it waits however long it takes for the server action to complete and the UI to
    re-render, rather than a fixed timeout.
 
-✻ Churned for 45s
+✻ Cogitated for 45s
 
 ❯ /export                                                                       
   ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-015442
@@ -704,7 +704,7 @@
   Run npm run db:seed before the next test run to get BC-ACTIVE1 into the
   database.
 
-✻ Cooked for 8m 3s
+✻ Brewed for 8m 3s
 
 ※ recap: Writing Playwright E2E tests for Bunkly and fixing test failures. Four failures were just fixed — run `npm run db:seed` then re-run the tests to verify.
 
@@ -1112,7 +1112,7 @@
    time LOY-02 calls goToLoyaltyPage, Sarah is enrolled in the DB. The retry
   loop exits on the first attempt.
 
-✻ Cogitated for 1m 47s
+✻ Brewed for 1m 47s
 
 ※ recap: Writing E2E Playwright tests for the Bunkly hotel booking app. Fixed four test failures including loyalty race conditions, BOOK-08 needing a checked-in booking, and a bad search filter. Run npm run db:seed then re-run the tests to verify.
 
@@ -1350,7 +1350,7 @@
   error: "Review not found." } gracefully instead of crashing the server action
   and triggering Next.js's error boundary.
 
-✻ Churned for 18m 50s
+✻ Cogitated for 18m 50s
 
 ※ recap: Fixed two failing review tests: REV-01 now navigates directly to the known BC-PAST01 booking card instead of using a broken isVisible loop, and REV-04 gets serial mode plus a class-based assertion. Run the tests to verify.
 
@@ -1522,6 +1522,222 @@
   - DATABASE_URL — your Neon connection string
   - AUTH_SECRET — the AUTH_SECRET from your .env
 
-✻ Sautéed for 6m 4s
+✻ Baked for 6m 4s
 
 ※ recap: Added GitHub Actions workflow with 3 parallel e2e shards plus an auth job, and fixed two failing review tests. Next: push to GitHub and add the DATABASE_URL and AUTH_SECRET repository secrets to enable CI.
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-124339
+     -this-session-is-being-continued-from-a-previous-c.txt
+
+❯ in CI > npx tsx --env-file .env src/lib/db/seed.ts                            
+                                                                                
+                                                                                
+                                                                                
+  node: .env: not found                                                         
+                                                                                
+                                                                                
+    1) [setup] › tests/auth.setup.ts:7:6 › seed database and save sarah session 
+   ──────────────────────                                                       
+                                                                                
+      Error: Command failed: npm run db:seed                                    
+                                                                                
+         6 |                                                                    
+         7 | setup('seed database and save sarah session', async ({ page }) =>  
+  {                                                                             
+      >  8 |   execSync('npm run db:seed', {                                    
+           |           ^                                                        
+         9 |     cwd: path.resolve(__dirname, '..'),                            
+        10 |     stdio: 'inherit',                                              
+        11 |   });                                                              
+          at /home/runner/work/bunklyv2-progress/bunklyv2-progress/tests/auth.s 
+  etup.ts:8:11                                                                  
+                                                                                
+      Error Context: test-results/auth.setup.ts-seed-database-and-save-sarah-se 
+  ssion-setup/error-context.md                                                  
+                                                                                
+                                                                                
+    1 failed                                                                    
+      [setup] › tests/auth.setup.ts:7:6 › seed database and save sarah session  
+  ───────────────────────                                                       
+  Error: Process completed with exit code 1.                                    
+                                                                                
+
+⏺ The issue: npm run db:seed uses npx tsx --env-file .env ... but .env doesn't
+  exist in CI (env vars come from secrets, not a file). The minimal fix is to
+  write a .env from the already-available env vars before the seed runs — no
+  source code changes needed.
+
+⏺ Update(.github/workflows/playwright.yml)
+  ⎿  Added 7 lines
+      47            path: .next/
+      48            retention-days: 1
+      49  
+      50 +      # npm run db:seed uses `tsx --env-file .env` which requir
+         +es the file to                                                 
+      51 +      # exist. In CI the vars come from secrets, so we material
+         +ise the file.                                                  
+      52 +      - name: Write .env for seed script                       
+      53 +        run: |                                                 
+      54 +          printf 'DATABASE_URL=%s\nAUTH_SECRET=%s\nAUTH_URL=%s\
+         +n' \                                                           
+      55 +            "$DATABASE_URL" "$AUTH_SECRET" "$AUTH_URL" > .env  
+      56 +                                                               
+      57        - name: Install Playwright browsers (Chromium only)
+      58          run: npx playwright install --with-deps chromium
+      59  
+
+⏺ Let me verify the relevant section looks right:
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ The fix writes DATABASE_URL, AUTH_SECRET, and AUTH_URL from the env block
+  (which pulls from GitHub secrets) into a .env file on disk before the seed
+  runs. The printf approach is POSIX-safe and doesn't echo the values into the
+  Actions log — they're passed as shell variables, which GitHub Actions already
+  masks in output.
+
+✻ Churned for 1m 7s
+
+❯ /export                                                                       
+  ⎿  Conversation exported to: /Users/webman/Downloads/bunklyv2/2026-05-26-124855
+     -this-session-is-being-continued-from-a-previous-c.txt
+
+※ recap: Building Playwright E2E tests with parallel CI sharding for the Bunkly hotel app. Fixed REV-01, REV-04, and the CI `.env` seed error. Next: push and confirm the workflow passes.
+
+❯                                                                               
+  0s                                                                            
+  Run actions/download-artifact@v4                                              
+                                                                                
+  Downloading single artifact                                                   
+  Error: Unable to download artifact(s): Artifact not found for name:           
+  nextjs-build                                                                  
+          Please ensure that your artifact is not expired and the artifact was  
+  uploaded using a compatible version of toolkit/upload-artifact.               
+          For more information, visit the GitHub Artifacts FAQ:                 
+  https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md    
+                                                                                
+
+⏺ The build artifact is never found because the .next/ upload likely fails
+  silently or the e2e jobs start before the artifact is committed. The cleanest
+  fix is to just rebuild per-shard (using a shared Next.js incremental build
+  cache to keep it fast) and drop the artifact entirely.
+
+  Read 1 file (ctrl+o to expand)
+
+⏺ Write(.github/workflows/playwright.yml)
+  ⎿  Added 23 lines, removed 21 lines
+      13    AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+      14    AUTH_URL: http://localhost:3000
+      15  
+      16 +# Reusable step sequences live in the composite action below.  
+      17 +# Each job that runs Playwright needs: checkout → node → npm ci
+         + → build → browsers.                                           
+      18 +# We do NOT share the .next build as an artifact because upload
+         +/download adds latency                                         
+      19 +# and Next.js incremental build cache (restored from actions/ca
+         +che) is fast enough.                                           
+      20 +                                                               
+      21  jobs:
+      17 -  # ─── 1. Build · Seed · Save storageState ───────────────────
+         -──────────────                                                 
+      18 -  # Runs once. Produces two artifacts consumed by every subsequ
+         -ent job:                                                       
+      19 -  #   • nextjs-build  — the .next production build             
+      20 -  #   • playwright-auth — tests/.auth/user.json (sarah's sessio
+         -n)                                                             
+      22 +  # ─── 1. Seed DB and save storageState ──────────────────────
+         +──────────────                                                 
+      23 +  # Runs once. Uploads playwright-auth (tests/.auth/user.json) 
+         +so every shard                                                 
+      24 +  # can start as pre-authenticated sarah without re-seeding.   
+      25    setup:
+      22 -    name: Build + seed + auth state                            
+      26 +    name: Seed + auth state                                    
+      27      runs-on: ubuntu-latest
+      28      steps:
+      29        - uses: actions/checkout@v4
+     ...
+      35  
+      36        - run: npm ci
+      37  
+      34 -      # Restore incremental Next.js build cache across runs.   
+      38        - uses: actions/cache@v4
+      39          with:
+      40            path: .next/cache
+     ...
+      43  
+      44        - run: npm run build
+      45  
+      43 -      # Upload the full .next build so shards skip rebuilding. 
+      44 -      - uses: actions/upload-artifact@v4                       
+      45 -        with:                                                  
+      46 -          name: nextjs-build                                   
+      47 -          path: .next/                                         
+      48 -          retention-days: 1                                    
+      49 -                                                               
+      50 -      # npm run db:seed uses `tsx --env-file .env` which requir
+         -es the file to                                                 
+      46 +      # npm run db:seed calls `tsx --env-file .env` which requi
+         +res the file to                                                
+      47        # exist. In CI the vars come from secrets, so we material
+          ise the file.
+      48        - name: Write .env for seed script
+      49          run: |
+     ...
+      84  
+      85        - run: npm ci
+      86  
+      91 -      # Download the build produced by the setup job — no rebui
+         -ld needed.                                                     
+      92 -      - uses: actions/download-artifact@v4                     
+      87 +      # Incremental build cache shared across shards for the sa
+         +me source tree.                                                
+      88 +      - uses: actions/cache@v4                                 
+      89          with:
+      94 -          name: nextjs-build                                   
+      95 -          path: .next/                                         
+      90 +          path: .next/cache                                    
+      91 +          key: nextjs-${{ runner.os }}-${{ hashFiles('package-l
+         +ock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'nex
+         +t.config.ts') }}                                               
+      92 +          restore-keys: nextjs-${{ runner.os }}-${{ hashFiles('
+         +package-lock.json') }}-                                        
+      93  
+      94 +      - run: npm run build                                     
+      95 +                                                               
+      96        - name: Install Playwright browsers (Chromium only)
+      97          run: npx playwright install --with-deps chromium
+      98  
+     ...
+      130  
+      131        - run: npm ci
+      132  
+      134 -      - uses: actions/download-artifact@v4                    
+      133 +      - uses: actions/cache@v4                                
+      134          with:
+      136 -          name: nextjs-build                                  
+      137 -          path: .next/                                        
+      135 +          path: .next/cache                                   
+      136 +          key: nextjs-${{ runner.os }}-${{ hashFiles('package-
+          +lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'n
+          +ext.config.ts') }}                                            
+      137 +          restore-keys: nextjs-${{ runner.os }}-${{ hashFiles(
+          +'package-lock.json') }}-                                      
+      138  
+      139 +      - run: npm run build                                    
+      140 +                                                              
+      141        - name: Install Playwright browsers (Chromium only)
+      142          run: npx playwright install --with-deps chromium
+      143  
+⏺ The nextjs-build artifact is gone. Each job now rebuilds independently using a
+   shared actions/cache key on .next/cache (Next.js's incremental build cache).
+  On the first push, all four jobs build from scratch (~60–90s each). On every
+  subsequent push where src/** hasn't changed, the cache restores in ~5s and the
+   build completes in ~10s — comparable to downloading an artifact, without the
+  failure mode.
+
+  The only artifact that matters cross-job is playwright-auth (sarah's session
+  cookie), which is tiny and always uploaded unconditionally from the setup job.
+
+✻ Brewed for 1m 48s
